@@ -72,3 +72,7 @@ from .src.sde_brownian import sde_Brownian
 from .src.multioutput_kern import MultioutputKern
 from .src.multioutput_derivative_kern import MultioutputDerivativeKern
 from .src.diff_kern import DiffKern
+from .src.lfm import LFMXLFM
+from .src.lfmM import LFM
+
+# from .src.lfm import LFM

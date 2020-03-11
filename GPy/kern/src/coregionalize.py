@@ -62,6 +62,11 @@ class Coregionalize(Kern):
         self.link_parameters(self.W, self.kappa)
 
     def parameters_changed(self):
+        '''
+        This function overrides the same name function in the grandparent class "Parameterizable", which is simply
+        "pass"
+        It describes the behaviours of the class when the "parameters" of a kernel are updated.
+        '''
         self.B = np.dot(self.W, self.W.T) + np.diag(self.kappa)
 
     def K(self, X, X2=None):
