@@ -1,6 +1,6 @@
 #include "complex"
 #include "Python.h"
-#include "npy_common.h"
+#include "numpy/npy_common.h"
 
 static PyObject *UpsilonMatrix(PyObject *self, PyObject *args);
 

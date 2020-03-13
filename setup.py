@@ -76,10 +76,15 @@ del version_dummy
 #This detects if we are building on a Mac
 def ismac():
     return sys.platform[:6] == 'darwin'
+def iswin():
+    return sys.platform[:5] == 'win32'
 
 if ismac():
     compile_flags = [ '-O3', ]
     link_args = []
+elif iswin():
+    compile_flags = [ '/openmp', '/O3']
+    link_args = ['-lgomp' ]
 else:
     compile_flags = [ '-fopenmp', '-O3']
     link_args = ['-lgomp' ]
@@ -113,7 +118,13 @@ try:
                           sources=['GPy/models/state_space_cython.pyx'],
                           include_dirs=[np.get_include(), '.'],
                           extra_compile_args=compile_flags,
+                          extra_link_args=link_args),
+                Extension(name='GPy.kern.src.lfm.lfm_C',
+                          sources = ['GPy/kern/src/lfm/lfm_C.cc', 'GPy/kern/src/lfm/Faddeeva.cc' ],
+                          include_dirs = [np.get_include(), '.'],
+                          extra_compile_args=compile_flags,
                           extra_link_args=link_args)]
+                          
 except ModuleNotFoundError:
     ext_mods = []
 

@@ -1,7 +1,7 @@
 /* This is a c file for accelerating the computation related to the latent force model kernal */
 
 #include "Python.h"
-#include "arrayobject.h"
+#include "numpy/arrayobject.h"
 #include "lfm_C.hh"
 #include <math.h>
 #include <iostream>
@@ -139,8 +139,8 @@ void C_UpsilonMatrix(
   //complex<double> Z2[MAX_COLS];
   //complex<double> WOFZ2[MAX_COLS];
   
-  complex<double> Z2[cols];
-  complex<double> WOFZ2[cols];
+  complex<double> *Z2 = (complex<double> *)malloc(cols*sizeof(complex<double>));
+  complex<double> *WOFZ2 = (complex<double> *)malloc(cols*sizeof(complex<double>));
   
   for(long j = 0; j < cols; j++) {
     Z2[j] = t2[j] / dev + dev * gamma / 2.0;
@@ -195,6 +195,8 @@ void C_UpsilonMatrix(
       p_result[i*cols + j].imag = imag(ans);
     }
   }
+  free(Z2);
+  free(WOFZ2);
 }
 
 
@@ -377,8 +379,8 @@ void C_GradientUpsilonMatrix(
   //complex<double> Z2[MAX_COLS];
   //complex<double> WOFZ2[MAX_COLS];
   
-  complex<double> Z2[cols];
-  complex<double> WOFZ2[cols];
+  complex<double> *Z2 = (complex<double> *)malloc(cols*sizeof(complex<double>));
+  complex<double> *WOFZ2 = (complex<double> *)malloc(cols*sizeof(complex<double>));
   
   for(long j = 0; j < cols; j++) {
     Z2[j] = t2[j] / dev + dev * gamma / 2.0;
@@ -442,6 +444,8 @@ void C_GradientUpsilonMatrix(
       p_result[i*cols + j].imag = imag(ans);
     }
   }
+  free(Z2);
+  free(WOFZ2);
 }
     
 
@@ -636,8 +640,8 @@ void C_GradientSigmaUpsilonMatrix(
   //complex<double> Z2[MAX_COLS];
   //complex<double> WOFZ2[MAX_COLS];
   
-  complex<double> Z2[cols];
-  complex<double> WOFZ2[cols];
+  complex<double> *Z2 = (complex<double> *)malloc(cols * sizeof(complex<double>));
+  complex<double> *WOFZ2 = (complex<double> *)malloc(cols * sizeof(complex<double>));
   
   for(long j = 0; j < cols; j++) {
     Z2[j] = t2[j] / dev + dev * gamma / 2.0;
@@ -713,6 +717,8 @@ void C_GradientSigmaUpsilonMatrix(
       p_result[i*cols + j].imag = imag(ans);
     }
   }
+  free(Z2);
+  free(WOFZ2);
 }
 
     
