@@ -6,7 +6,7 @@ The package for the Psi statistics computation of the linear kernel for Bayesian
 """
 
 import numpy as np
-from ....util.linalg import tdot
+from GPy.util.linalg import tdot
 
 def psicomputations(variance, Z, variational_posterior, return_psi2_n=False):
     """

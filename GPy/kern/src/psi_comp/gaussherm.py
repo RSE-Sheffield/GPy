@@ -7,9 +7,9 @@ An approximated psi-statistics implementation based on Gauss-Hermite Quadrature
 
 import numpy as np
 
-from ....core.parameterization import Param
+from GPy.core.parameterization import Param
 from paramz.caching import Cache_this
-from ....util.linalg import tdot
+from GPy.util.linalg import tdot
 from . import PSICOMP
 
 

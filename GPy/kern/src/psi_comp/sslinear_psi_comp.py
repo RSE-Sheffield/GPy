@@ -5,7 +5,7 @@
 The package for the Psi statistics computation of the linear kernel for SSGPLVM
 """
 
-from ....util.linalg import tdot
+from GPy.util.linalg import tdot
 
 import numpy as np
 
