@@ -8,7 +8,7 @@ from numpy.lib.scimath import sqrt as csqrt
 from GPy.core.parameterization import Param
 from paramz.transformations import Logexp
 from GPy.kern.src.independent_outputs import index_to_slices
-from . import lfm_C
+from GPy.kern.src.lfm import lfm_C
 from GPy.kern.src.kern import Kern
 import inspect
 from ...core.parameterization.parameterized import Parameterized
@@ -201,7 +201,7 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
     # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
 
     if not mode:
-        if not term:
+        if not term:            
             g = np.dot((gradUpsilon1 * gradThetaGamma), (preExp/preFactor[0] - np.conj(preExp)/preFactor[1])[:, None].T )\
                 + np.dot((compUpsilon1 * gradThetaGamma), (- preExp/preFactorGrad[0] + np.conj(preExp)/preFactorGrad[1])[:,None].T)
         else:
@@ -212,7 +212,7 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
     else:
         g = np.dot((gradUpsilon1 * gradThetaGamma[0]), (preExp[:, 0]/preFactor[0] - preExp[:, 1]/preFactor[1])[:,None].T) \
             + np.dot((compUpsilon1 * gradThetaGamma[0]), (- preExp[:, 0]/preFactorGrad[0] + preExp[:, 1]/preFactorGrad[1])[:,None].T) \
-            + np.dot((gradUpsilon2 * gradThetaGamma[1]), (preExp[:, 1]/preFactor[3] - preExp[:, 0]/preFactor[2])[:,None].T  \
+            + np.dot((gradUpsilon2 * gradThetaGamma[1]), (preExp[:, 1]/preFactor[3] - preExp[:, 0]/preFactor[2])[:,None].T)  \
             + np.dot((compUpsilon2 * gradThetaGamma[1]), (- preExp[:, 1]/preFactorGrad[3] + preExp[:, 0]/preFactorGrad[2])[:,None].T)
     return g
 
