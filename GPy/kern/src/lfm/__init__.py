@@ -8,7 +8,7 @@ from numpy.lib.scimath import sqrt as csqrt
 from GPy.core.parameterization import Param
 from paramz.transformations import Logexp
 from GPy.kern.src.independent_outputs import index_to_slices
-from . import lfm_C
+from GPy.kern.src.lfm import lfm_C
 from GPy.kern.src.kern import Kern
 #import numpy as np
 #from ...core.parameterization import Param
