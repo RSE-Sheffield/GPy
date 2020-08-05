@@ -1,4 +1,5 @@
-#import GPy.kern.src.lfm
+import GPy
+import GPy.kern
 from GPy.kern.src.lfm import lfm_C
 import numpy as np
 import sys
