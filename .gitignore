@@ -55,4 +55,4 @@ iterate.dat
 GPy*.rst
 
 # vscode
-settings.json
+.vscode/*
