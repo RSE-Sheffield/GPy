@@ -12,7 +12,6 @@ def cell(d0, d1):
         return [[None for _ in range(d1)] for _ in range(d0)]
 
 def lfmUpsilonMatrix(gamma1_p, sigma2, X, X2):
-    print((gamma1_p, sigma2, X, X2))
     return lfm_C.UpsilonMatrix(gamma1_p, sigma2, X.astype(np.float64), X2.astype(np.float64))
 
 def lfmUpsilonVector(gamma1_p, sigma2, X):
@@ -41,8 +40,6 @@ def lfmComputeH3( gamma1_p, gamma1_m, sigma2, X, X2, preFactor, mode=None, term=
     # ARG X2 : second time input (number of time points x 1).
     # ARG mode: indicates in which way the vectors X and X2 must be transposed
     # RETURN h : result of this subcomponent of the kernel for the given values.
-    print('lfmComputeH3')
-    print((gamma1_p, sigma2, X, X2))
     if not mode:
         if not term:
             upsilon = lfmUpsilonMatrix(gamma1_p, sigma2, X, X2)
@@ -105,10 +102,6 @@ def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradU
     #
     # Author : Tianqi Wei
     # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
-    print('preFactor')
-    print(preFactor)
-    print('preFactorGrad')
-    print(preFactorGrad)
     if not mode:
         if not term:
             g = (preFactor*gradUpsilon1 + preFactorGrad*compUpsilon1)*gradThetaGamma
