@@ -7,14 +7,14 @@
 # from paramz.transformations import Logexp
 # from .independent_outputs import index_to_slices
 
-from ...kern import Kern
+from GPy.kern import Kern
 import numpy as np
-from .....core.parameterization import Param
-from ..paramz.transformations import Logexp
-from ...independent_outputs import index_to_slices
+from GPy.core.parameterization import Param
+from paramz.transformations import Logexp
+from GPy.kern.src.independent_outputs import index_to_slices
 
 
-from ...util.config import config # for assesing whether to use cython
+from GPy.util.config import config # for assesing whether to use cython
 
 
 class LFM(Kern):

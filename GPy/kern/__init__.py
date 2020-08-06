@@ -74,7 +74,7 @@ from .src.multioutput_derivative_kern import MultioutputDerivativeKern
 from .src.diff_kern import DiffKern
 #from .src.lfm import LFMXLFM
 #from .src.lfmM import LFM
-from .src.lfm.lfm import lfm
+from .src.lfm.lfm import LFM
 #from .src.lfm import lfm_C
 
 # from .src.lfm import LFM

@@ -1,13 +1,13 @@
 # Copyright (c) 2012, James Hensman and Ricardo Andrade
 # Licensed under the BSD 3-clause license (see LICENSE.txt)
-import sys
+# import sys
 
-from ..kern import Kern
-import numpy as np
-from numpy.lib.scimath import sqrt as csqrt
-from GPy.core.parameterization import Param
-from paramz.transformations import Logexp
-from GPy.kern.src.independent_outputs import index_to_slices
+# from ..kern import Kern
+# import numpy as np
+# from numpy.lib.scimath import sqrt as csqrt
+# from GPy.core.parameterization import Param
+# from paramz.transformations import Logexp
+# from GPy.kern.src.independent_outputs import index_to_slices
 #from GPy.kern.src.lfm import lfm_C
 #import numpy as np
 #from ...core.parameterization import Param
