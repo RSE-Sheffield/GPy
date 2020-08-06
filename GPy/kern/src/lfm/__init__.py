@@ -2,21 +2,8 @@
 # Licensed under the BSD 3-clause license (see LICENSE.txt)
 # import sys
 
-# from ..kern import Kern
-# import numpy as np
-# from numpy.lib.scimath import sqrt as csqrt
-# from GPy.core.parameterization import Param
-# from paramz.transformations import Logexp
-# from GPy.kern.src.independent_outputs import index_to_slices
-#from GPy.kern.src.lfm import lfm_C
-#import numpy as np
-#from ...core.parameterization import Param
-# from paramz.transformations import Logexp
-# from .independent_outputs import index_to_slices
+import numpy as np
 from . import lfm_C
-
-#from \util.config import config # for assesing whether to use cython
-
 
 def cell(d0, d1):
     if d1 == 1:
