@@ -2,23 +2,23 @@ import lfm_C
 import numpy as np
 import sys
 
-def lfmUpsilonMatrix(gamma1_p, sigma2, t1, t2):
-    return lfm_C.UpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
+# def lfmUpsilonMatrix(gamma1_p, sigma2, t1, t2):
+#     return lfm_C.UpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
 
-def lfmUpsilonVector(gamma1_p, sigma2, t1):
-    return lfm_C.UpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
+# def lfmUpsilonVector(gamma1_p, sigma2, t1):
+#     return lfm_C.UpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
 
-def lfmGradientUpsilonMatrix(gamma1_p, sigma2, t1, t2):
-    return lfm_C.GradientUpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
+# def lfmGradientUpsilonMatrix(gamma1_p, sigma2, t1, t2):
+#     return lfm_C.GradientUpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
 
-def lfmGradientUpsilonVector(gamma1_p, sigma2, t1):
-    return lfm_C.GradientUpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
+# def lfmGradientUpsilonVector(gamma1_p, sigma2, t1):
+#     return lfm_C.GradientUpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
 
-def lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1, t2):
-    return lfm_C.GradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
+# def lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1, t2):
+#     return lfm_C.GradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1.astype(np.float64), t2.astype(np.float64))
 
-def lfmGradientSigmaUpsilonVector(gamma1_p, sigma2, t1):
-    return lfm_C.GradientSigmaUpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
+# def lfmGradientSigmaUpsilonVector(gamma1_p, sigma2, t1):
+#     return lfm_C.GradientSigmaUpsilonVector(gamma1_p, sigma2, t1.astype(np.float64))
 
 if __name__ == '__main__':
     gamma1_p = 0.5 + 0.5j
