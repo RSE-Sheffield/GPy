@@ -1,3 +1,12 @@
+from GPy.kern import Kern
+import numpy as np
+from GPy.core.parameterization import Param
+from paramz.transformations import Logexp
+from GPy.kern.src.independent_outputs import index_to_slices
+
+
+from GPy.util.config import config # for assesing whether to use cython
+
 class LFMXLFM(Kern):
     """
     LFM X LFM convolved kernel todo: expand.
