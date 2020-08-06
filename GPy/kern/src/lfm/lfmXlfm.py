@@ -1,29 +1,6 @@
 class LFMXLFM(Kern):
     """
-    Covariance function for intrinsic/linear coregionalization models
-
-    This covariance has the form:
-    .. math::
-       \mathbf{B} = \mathbf{W}\mathbf{W}^\top + \text{diag}(kappa)
-
-    An intrinsic/linear coregionalization covariance function of the form:
-    .. math::
-
-       k_2(x, y)=\mathbf{B} k(x, y)
-
-    it is obtained as the tensor product between a covariance function
-    k(x, y) and B.
-
-    :param output_dim: number of outputs to coregionalize
-    :type output_dim: int
-    :param rank: number of columns of the W matrix (this parameter is ignored if parameter W is not None)
-    :type rank: int
-    :param W: a low rank matrix that determines the correlations between the different outputs, together with kappa it forms the coregionalization matrix B
-    :type W: numpy array of dimensionality (num_outpus, W_columns)
-    :param kappa: a vector which allows the outputs to behave independently
-    :type kappa: numpy array of dimensionality  (output_dim, )
-
-    .. note: see coregionalization examples in GPy.examples.regression for some usage.
+    LFM X LFM convolved kernel todo: expand.
     """
 
     def __init__(self, input_dim, output_dim, scale=None, mass=None, spring=None, damper=None, sensitivity=None,
