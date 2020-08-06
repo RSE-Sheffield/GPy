@@ -13,7 +13,7 @@
 #from ...core.parameterization import Param
 # from paramz.transformations import Logexp
 # from .independent_outputs import index_to_slices
-# import lfm_C
+from . import lfm_C
 
 #from \util.config import config # for assesing whether to use cython
 
