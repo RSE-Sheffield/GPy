@@ -84,7 +84,7 @@ if ismac():
     link_args = []
 elif iswin():
     compile_flags = [ '/openmp', '/O3']
-    link_args = ['-lgomp' ]
+    link_args = ['/DEBUG']
 else:
     compile_flags = [ '-fopenmp', '-O3']
     link_args = ['-lgomp' ]
