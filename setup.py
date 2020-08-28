@@ -86,7 +86,7 @@ elif iswin():
     compile_flags = [ '/openmp', '/O3']
     link_args = ['/DEBUG']
 else:
-    compile_flags = [ '-fopenmp', '-O3']
+    compile_flags = [ '-fopenmp', '-O3', '-g']
     link_args = ['-lgomp' ]
 
 try:
