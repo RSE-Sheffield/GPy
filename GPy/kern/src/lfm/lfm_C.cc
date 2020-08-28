@@ -84,19 +84,20 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
     double sigma2;
     PyArrayObject *t1, *t2, *P_UpsilonMatrix_npy;//, *UpsilonMatrix;
 
-    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
-    const npy_intp UpsilonMatrix_dim[2] = {nrow, ncol};
-
-	/* Parse tuples separately since args will differ between C fcns */
-	  if (!PyArg_ParseTuple(args, "DdO!O!", 
-		    &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-	  // if (gamma_npy == NULL )  
+    /* Parse tuples separately since args will differ between C fcns */
+    if (!PyArg_ParseTuple(args, "DdO!O!", 
+        &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
+    // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
     if (t2 == NULL )  return NULL;
+
+    gamma = gamma_npy.real + gamma_npy.imag * 1i;
+    
+    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    const npy_intp UpsilonMatrix_dim[2] = {nrow, ncol};
 
 	/* Get the dimensions of the input */
 	
