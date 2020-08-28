@@ -333,30 +333,30 @@ static PyObject *GradientUpsilonMatrix(PyObject *self, PyObject *args)
     npy_cdouble gamma_npy;
     complex<double> gamma;
     double sigma2;
-    PyArrayObject *t1, *t2;//, *UpsilonMatrix;
+    PyArrayObject *t1, *t2, *P_GradientUpsilonMatrix_npy;//, *UpsilonMatrix;
 
-    long nrow, ncol;
-    int UpsilonMatrix_dim[2];
-
-	/* Parse tuples separately since args will differ between C fcns */
-	  if (!PyArg_ParseTuple(args, "DdO!O!", 
-		    &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-	  // if (gamma_npy == NULL )  
+    /* Parse tuples separately since args will differ between C fcns */
+    if (!PyArg_ParseTuple(args, "DdO!O!", 
+        &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
+    // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;  
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
     if (t2 == NULL )  return NULL;
 
+    gamma = gamma_npy.real + gamma_npy.imag * 1i;
+    
+    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    const npy_intp GradientUpsilonMatrix_dim[2] = {nrow, ncol};
+
 	/* Get the dimensions of the input */
-	nrow=UpsilonMatrix_dim[0] = t1->dimensions[0]; /* Get row dimension of t1*/
-	ncol=UpsilonMatrix_dim[1] = t2->dimensions[0]; /* Get row dimension of t2*/
+	
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
-    /* Make a new double matrix of same dims */
-  PyArrayObject * P_GradientUpsilonMatrix_npy = (PyArrayObject * ) PyArray_FromDims(2, UpsilonMatrix_dim, NPY_CDOUBLE);
-  C_GradientUpsilonMatrix( gamma,sigma2, (double *) t1->data, (double *) t2->data, nrow, ncol, (npy_cdouble *) P_GradientUpsilonMatrix_npy->data);
+  /* Make a new double matrix of same dims */
+  P_GradientUpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, GradientUpsilonMatrix_dim, NPY_CDOUBLE);
+  C_GradientUpsilonMatrix(gamma,sigma2, (double *) t1->data, (double *) t2->data, nrow, ncol, (npy_cdouble *) P_GradientUpsilonMatrix_npy->data);
 
    return PyArray_Return(P_GradientUpsilonMatrix_npy);
 	
