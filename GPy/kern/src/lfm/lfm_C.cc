@@ -220,7 +220,7 @@ static PyObject *UpsilonVector(PyObject *self, PyObject *args)
     PyArrayObject *t1, *P_UpsilonVector_npy;//, *UpsilonMatrix;
 
     /* Parse tuples separately since args will differ between C fcns */
-    if (!PyArg_ParseTuple(args, "DdO!O!", 
+    if (!PyArg_ParseTuple(args, "DdO!", 
         &gamma_npy, &sigma2, &PyArray_Type, &t1))  return NULL;
     // if (gamma_npy == NULL )  
     //     return NULL;
