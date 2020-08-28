@@ -469,26 +469,28 @@ static PyObject *GradientUpsilonVector(PyObject *self, PyObject *args)
     npy_cdouble gamma_npy;
     complex<double> gamma;
     double sigma2;
-    PyArrayObject *t1;
-    long nrow;
-    int UpsilonMatrix_dim[2];
+    PyArrayObject *t1, *P_GradientUpsilonVector_npy;//, *UpsilonMatrix;
 
-	/* Parse tuples separately since args will differ between C fcns */
-	  if (!PyArg_ParseTuple(args, "DdO!", 
-		    &gamma_npy, &sigma2, &PyArray_Type, &t1))  return NULL;
-	  // if (gamma_npy == NULL )  
+    /* Parse tuples separately since args will differ between C fcns */
+    if (!PyArg_ParseTuple(args, "DdO!", 
+        &gamma_npy, &sigma2, &PyArray_Type, &t1))  return NULL;
+    // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;  
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
 
+    gamma = gamma_npy.real + gamma_npy.imag * 1i;
+    
+    long nrow = t1->dimensions[0];
+    const npy_intp GradientUpsilonVector_dim[1] = {nrow};
+
 	/* Get the dimensions of the input */
-	nrow=UpsilonMatrix_dim[0] = t1->dimensions[0]; /* Get row dimension of t1*/
+	
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
-    /* Make a new double matrix of same dims */
-  PyArrayObject * P_GradientUpsilonVector_npy = (PyArrayObject * )  PyArray_FromDims(1, UpsilonMatrix_dim, NPY_CDOUBLE);
+  /* Make a new double matrix of same dims */
+  P_GradientUpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, GradientUpsilonVector_dim, NPY_CDOUBLE);
   C_GradientUpsilonVector( gamma,sigma2, (double *) t1->data, nrow, (npy_cdouble *) P_GradientUpsilonVector_npy->data);
 
    return PyArray_Return(P_GradientUpsilonVector_npy);
@@ -594,29 +596,29 @@ static PyObject *GradientSigmaUpsilonMatrix(PyObject *self, PyObject *args)
     npy_cdouble gamma_npy;
     complex<double> gamma;
     double sigma2;
-    PyArrayObject *t1, *t2;//, *UpsilonMatrix;
+    PyArrayObject *t1, *t2, *P_GradientSigmaUpsilonMatrix_npy;//, *UpsilonMatrix;
 
-    long nrow, ncol;
-    int UpsilonMatrix_dim[2];
-
-	/* Parse tuples separately since args will differ between C fcns */
-	  if (!PyArg_ParseTuple(args, "DdO!O!", 
-		    &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-	  // if (gamma_npy == NULL )  
+    /* Parse tuples separately since args will differ between C fcns */
+    if (!PyArg_ParseTuple(args, "DdO!O!", 
+        &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
+    // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;  
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
     if (t2 == NULL )  return NULL;
 
+    gamma = gamma_npy.real + gamma_npy.imag * 1i;
+    
+    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    const npy_intp GradientSigmaUpsilonMatrix_dim[2] = {nrow, ncol};
+
 	/* Get the dimensions of the input */
-	nrow=UpsilonMatrix_dim[0] = t1->dimensions[0]; /* Get row dimension of t1*/
-	ncol=UpsilonMatrix_dim[1] = t2->dimensions[0]; /* Get row dimension of t2*/
+	
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
-    /* Make a new double matrix of same dims */
-  PyArrayObject * P_GradientSigmaUpsilonMatrix_npy = (PyArrayObject * ) PyArray_FromDims(2, UpsilonMatrix_dim, NPY_CDOUBLE);
+  /* Make a new double matrix of same dims */
+  P_GradientSigmaUpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, GradientSigmaUpsilonMatrix_dim, NPY_CDOUBLE);
   C_GradientSigmaUpsilonMatrix( gamma,sigma2, (double *) t1->data, (double *) t2->data, nrow, ncol, (npy_cdouble *) P_GradientSigmaUpsilonMatrix_npy->data);
 
    return PyArray_Return(P_GradientSigmaUpsilonMatrix_npy);
@@ -742,26 +744,28 @@ static PyObject *GradientSigmaUpsilonVector(PyObject *self, PyObject *args)
     npy_cdouble gamma_npy;
     complex<double> gamma;
     double sigma2;
-    PyArrayObject *t1;
-    long nrow;
-    int UpsilonMatrix_dim[2];
+    PyArrayObject *t1, *P_GradientSigmaUpsilonVector_npy;//, *UpsilonMatrix;
 
-	/* Parse tuples separately since args will differ between C fcns */
-	  if (!PyArg_ParseTuple(args, "DdO!", 
-		    &gamma_npy, &sigma2, &PyArray_Type, &t1))  return NULL;
-	  // if (gamma_npy == NULL )  
+    /* Parse tuples separately since args will differ between C fcns */
+    if (!PyArg_ParseTuple(args, "DdO!", 
+        &gamma_npy, &sigma2, &PyArray_Type, &t1))  return NULL;
+    // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;  
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
 
+    gamma = gamma_npy.real + gamma_npy.imag * 1i;
+    
+    long nrow = t1->dimensions[0];
+    const npy_intp GradientSigmaUpsilonVector_dim[1] = {nrow};
+
 	/* Get the dimensions of the input */
-	nrow=UpsilonMatrix_dim[0] = t1->dimensions[0]; /* Get row dimension of t1*/
+	
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
-    /* Make a new double matrix of same dims */
-  PyArrayObject * P_GradientSigmaUpsilonVector_npy = (PyArrayObject * )  PyArray_FromDims(1, UpsilonMatrix_dim, NPY_CDOUBLE);
+  /* Make a new double matrix of same dims */
+  P_GradientSigmaUpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, GradientSigmaUpsilonVector_dim, NPY_CDOUBLE);
   C_GradientSigmaUpsilonVector( gamma,sigma2, (double *) t1->data, nrow, (npy_cdouble *) P_GradientSigmaUpsilonVector_npy->data);
 
    return PyArray_Return(P_GradientSigmaUpsilonVector_npy);
