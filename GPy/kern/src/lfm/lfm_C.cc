@@ -101,7 +101,7 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_UpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, UpsilonMatrix_dim, NPY_CDOUBLE);
@@ -122,14 +122,14 @@ void C_UpsilonMatrix(
     
 {
 
-  cout<<"gamma="<<gamma<<" sigma2="<< sigma2 <<" rows="<<rows<<" cols="<<cols<<" "<< endl;
+  // cout<<"gamma="<<gamma<<" sigma2="<< sigma2 <<" rows="<<rows<<" cols="<<cols<<" "<< endl;
   for (int i=0;i<rows; i++)
   {
-    cout<<"t1[" <<i<< "] = "<<t1[i]<<"\n";
+    // cout<<"t1[" <<i<< "] = "<<t1[i]<<"\n";
   }
   for (int i=0;i<cols; i++)
   {
-    cout<<"t2[" <<i<< "] = "<<t2[i]<<"\n";
+    // cout<<"t2[" <<i<< "] = "<<t2[i]<<"\n";
   }
   complex<double> complexJ(0, 1);
   complex<double> complexMinusJ(0, -1);
@@ -190,7 +190,7 @@ void C_UpsilonMatrix(
           log(WOFZ2[j]) )
         );
       }
-      cout<<"ans = " << ans << endl;
+      // cout<<"ans = " << ans << endl;
       p_result[i*cols + j].real = real(ans);
       p_result[i*cols + j].imag = imag(ans);
     }
@@ -235,7 +235,7 @@ static PyObject *UpsilonVector(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_UpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, UpsilonVector_dim, NPY_CDOUBLE);
@@ -352,7 +352,7 @@ static PyObject *GradientUpsilonMatrix(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_GradientUpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, GradientUpsilonMatrix_dim, NPY_CDOUBLE);
@@ -487,7 +487,7 @@ static PyObject *GradientUpsilonVector(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_GradientUpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, GradientUpsilonVector_dim, NPY_CDOUBLE);
@@ -615,7 +615,7 @@ static PyObject *GradientSigmaUpsilonMatrix(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_GradientSigmaUpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, GradientSigmaUpsilonMatrix_dim, NPY_CDOUBLE);
@@ -762,7 +762,7 @@ static PyObject *GradientSigmaUpsilonVector(PyObject *self, PyObject *args)
 
 	/* Get the dimensions of the input */
 	
-	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
+	// cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
   P_GradientSigmaUpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, GradientSigmaUpsilonVector_dim, NPY_CDOUBLE);
