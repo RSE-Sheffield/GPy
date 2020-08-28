@@ -238,7 +238,7 @@ static PyObject *UpsilonVector(PyObject *self, PyObject *args)
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
   /* Make a new double matrix of same dims */
-  P_UpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(2, UpsilonVector_dim, NPY_CDOUBLE);
+  P_UpsilonVector_npy = (PyArrayObject * ) PyArray_SimpleNew(1, UpsilonVector_dim, NPY_CDOUBLE);
   C_UpsilonVector( gamma,sigma2, (double *) t1->data, nrow, (npy_cdouble *) P_UpsilonVector_npy->data);
 
   return PyArray_Return(P_UpsilonVector_npy);
