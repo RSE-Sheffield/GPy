@@ -1,0 +1,12 @@
+name: GPy
+channels:
+  - defaults
+dependencies:
+  # install dependencies
+  - python=3.7.4
+  - scipy
+  - numpy
+  - matplotlib
+
+  # test dependencies
+  - pytest=5.4.1
