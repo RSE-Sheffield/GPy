@@ -82,10 +82,10 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
     npy_cdouble gamma_npy;
     complex<double> gamma;
     double sigma2;
-    PyArrayObject *t1, *t2;//, *UpsilonMatrix;
+    PyArrayObject *t1, *t2, *P_UpsilonMatrix_npy;//, *UpsilonMatrix;
 
-    long nrow, ncol;
-    int UpsilonMatrix_dim[2];
+    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    const npy_intp UpsilonMatrix_dim[2] = {nrow, ncol};
 
 	/* Parse tuples separately since args will differ between C fcns */
 	  if (!PyArg_ParseTuple(args, "DdO!O!", 
@@ -93,18 +93,17 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
 	  // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-        gamma = gamma_npy.real + gamma_npy.imag * 1i;  
+        gamma = gamma_npy.real + gamma_npy.imag * 1i;
     if (sigma2 == NULL )  return NULL;
     if (t1 == NULL )  return NULL;
     if (t2 == NULL )  return NULL;
 
 	/* Get the dimensions of the input */
-	nrow=UpsilonMatrix_dim[0] = t1->dimensions[0]; /* Get row dimension of t1*/
-	ncol=UpsilonMatrix_dim[1] = t2->dimensions[0]; /* Get row dimension of t2*/
+	
 	cout<<"gamma = " << gamma_npy.real <<'+' <<gamma_npy.imag << 'i'<< "\n"<< "sigma2 = " << sigma2 << endl;
 
     /* Make a new double matrix of same dims */
-  PyArrayObject * P_UpsilonMatrix_npy = (PyArrayObject * ) PyArray_FromDims(2, UpsilonMatrix_dim, NPY_CDOUBLE);
+  P_UpsilonMatrix_npy = (PyArrayObject * ) PyArray_SimpleNew(2, UpsilonMatrix_dim, NPY_CDOUBLE);
   C_UpsilonMatrix( gamma,sigma2, (double *) t1->data, (double *) t2->data, nrow, ncol, (npy_cdouble *) P_UpsilonMatrix_npy->data);
 
    return PyArray_Return(P_UpsilonMatrix_npy);
