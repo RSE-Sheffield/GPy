@@ -87,12 +87,6 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
     /* Parse tuples separately since args will differ between C fcns */
     if (!PyArg_ParseTuple(args, "DdO!O!", 
         &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-    // if (gamma_npy == NULL )  
-    //     return NULL;
-    // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
-    if (t2 == NULL )  return NULL;
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
@@ -225,8 +219,7 @@ static PyObject *UpsilonVector(PyObject *self, PyObject *args)
     // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
+
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
@@ -338,12 +331,7 @@ static PyObject *GradientUpsilonMatrix(PyObject *self, PyObject *args)
     /* Parse tuples separately since args will differ between C fcns */
     if (!PyArg_ParseTuple(args, "DdO!O!", 
         &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-    // if (gamma_npy == NULL )  
-    //     return NULL;
-    // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
-    if (t2 == NULL )  return NULL;
+
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
@@ -477,8 +465,7 @@ static PyObject *GradientUpsilonVector(PyObject *self, PyObject *args)
     // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
+
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
@@ -601,12 +588,7 @@ static PyObject *GradientSigmaUpsilonMatrix(PyObject *self, PyObject *args)
     /* Parse tuples separately since args will differ between C fcns */
     if (!PyArg_ParseTuple(args, "DdO!O!", 
         &gamma_npy, &sigma2, &PyArray_Type, &t1, &PyArray_Type, &t2))  return NULL;
-    // if (gamma_npy == NULL )  
-    //     return NULL;
-    // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
-    if (t2 == NULL )  return NULL;
+
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
@@ -752,8 +734,7 @@ static PyObject *GradientSigmaUpsilonVector(PyObject *self, PyObject *args)
     // if (gamma_npy == NULL )  
     //     return NULL;
     // else
-    if (sigma2 == NULL )  return NULL;
-    if (t1 == NULL )  return NULL;
+
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
