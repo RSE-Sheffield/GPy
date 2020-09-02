@@ -90,7 +90,7 @@ static PyObject *UpsilonMatrix(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    npy_intp nrow = t1->dimensions[0], ncol = t2->dimensions[0];
     const npy_intp UpsilonMatrix_dim[2] = {nrow, ncol};
 
 	/* Get the dimensions of the input */
@@ -223,7 +223,7 @@ static PyObject *UpsilonVector(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0];
+    npy_intp nrow = t1->dimensions[0];
     const npy_intp UpsilonVector_dim[1] = {nrow};
 
 	/* Get the dimensions of the input */
@@ -335,7 +335,7 @@ static PyObject *GradientUpsilonMatrix(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    npy_intp nrow = t1->dimensions[0], ncol = t2->dimensions[0];
     const npy_intp GradientUpsilonMatrix_dim[2] = {nrow, ncol};
 
 	/* Get the dimensions of the input */
@@ -469,7 +469,7 @@ static PyObject *GradientUpsilonVector(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0];
+    npy_intp nrow = t1->dimensions[0];
     const npy_intp GradientUpsilonVector_dim[1] = {nrow};
 
 	/* Get the dimensions of the input */
@@ -592,7 +592,7 @@ static PyObject *GradientSigmaUpsilonMatrix(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0], ncol = t2->dimensions[0];
+    npy_intp nrow = t1->dimensions[0], ncol = t2->dimensions[0];
     const npy_intp GradientSigmaUpsilonMatrix_dim[2] = {nrow, ncol};
 
 	/* Get the dimensions of the input */
@@ -738,7 +738,7 @@ static PyObject *GradientSigmaUpsilonVector(PyObject *self, PyObject *args)
 
     gamma = gamma_npy.real + gamma_npy.imag * 1i;
     
-    long nrow = t1->dimensions[0];
+    npy_intp nrow = t1->dimensions[0];
     const npy_intp GradientSigmaUpsilonVector_dim[1] = {nrow};
 
 	/* Get the dimensions of the input */
