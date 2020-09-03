@@ -43,6 +43,7 @@ iterate.dat
 # Nosetests #
 #############
 *.noseids
+*/testresult/*
 
 # git merge files #
 ###################
