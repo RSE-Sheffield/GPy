@@ -18,7 +18,6 @@ class Kern(Parameterized):
     # Here, we use the Python module six to support Py3 and Py2 simultaneously
     #===========================================================================
     _support_GPU = False
-
     def __init__(self, input_dim, active_dims, name, useGPU=False, *a, **kw):
         """
         The base class for a kernel: a positive definite function
@@ -116,6 +115,12 @@ class Kern(Parameterized):
             return X[:, self._all_dims_active].astype('float')
         except:
             return X[:, self._all_dims_active]
+
+    def _project_dim(self, dim):
+        try:
+            return np.where(self._all_dims_active == dim)[0][0]
+        except:
+            return None
 
     def K(self, X, X2):
         """
