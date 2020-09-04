@@ -7,6 +7,11 @@ dependencies:
   - scipy
   - numpy
   - matplotlib
+  - pip
+  - pip:
+    - paramz
 
   # test dependencies
   - pytest=5.4.1
+  - coverage
+  - nose
