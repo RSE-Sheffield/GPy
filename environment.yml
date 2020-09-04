@@ -4,14 +4,13 @@ channels:
 dependencies:
   # install dependencies
   - python=3.7.4
-  - scipy
-  - numpy
-  - matplotlib
   - pip
+  - matplotlib
   - pip:
     - paramz
-
-  # test dependencies
-  - pytest=5.4.1
-  - coverage
-  - nose
+    - codecov
+    - coveralls
+    - pypandoc
+    - git+git://github.com/BRML/climin.git
+    - autograd
+    - nose-show-skipped
