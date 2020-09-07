@@ -45,7 +45,7 @@ class LFM(Kern):
         self.damper = Param('scale', damper, Logexp())
 
         if sensitivity is None:
-            sensitivity = np.ones(self.output_dim, self.input_dim)
+            sensitivity = np.ones(self.output_dim)
         self.sensitivity = sensitivity
 
         self.link_parameters(self.scale, self.mass, self.spring, self.damper, self.sensitivity)
