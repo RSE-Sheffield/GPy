@@ -1,3 +1,5 @@
+# This file generates baseline data for testing functions associated with latent force models
+
 from GPy.kern.src.lfm import *
 import numpy as np
 import sys
