@@ -54,10 +54,10 @@ class LFMXLFM(Kern):
     def recalculate_intermediate_variables(self):
         # Get length scale out.
         self.sigma2 = self.scale
-        self.sigma = csqrt(self.sigma2)
+        self.sigma = np.sqrt(self.sigma2) #assuming this is a good sub for `csqrt`
         # alpha and omega are intermediate variables used in the model and gradient for optimisation
         self.alpha = self.damper / (2 * self.mass)
-        self.omega = csqrt(self.spring / self.mass - self.alpha * self.alpha)
+        self.omega = np.sqrt(self.spring / self.mass - self.alpha * self.alpha)
         print(self.omega)
         self.omega_isreal = np.isreal(self.omega)
 
@@ -128,9 +128,9 @@ class LFMXLFM(Kern):
                         )
             if self.isNormalised[q]:
                 K0 = (np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
-                        4 * csqrt(2) * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
+                        4 * np.sqrt(2) * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
             else:
-                K0 = (csqrt(self.scale[q]) * csqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
+                K0 = (np.sqrt(self.scale[q]) * np.sqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
                         4 * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
 
             K = K0 * sK
@@ -166,9 +166,9 @@ class LFMXLFM(Kern):
                 )
             if self.isNormalised[q]:
                 K0 = np.dot(self.sensitivity[q], self.sensitivity[q2]) / (
-                        8 * csqrt(2) * self.mass[q] * self.mass [q2]*  self.omega[q]*self.omega[q2])
+                        8 * np.sqrt(2) * self.mass[q] * self.mass [q2]*  self.omega[q]*self.omega[q2])
             else:
-                K0 = (csqrt(self.scale[q]) * csqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
+                K0 = (np.sqrt(self.scale[q]) * np.sqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
                         8 * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
 
             K = K0 * sK
@@ -217,9 +217,9 @@ class LFMXLFM(Kern):
             + lfmDiagComputeH4(gamma_m, sigma2, X, [gamma_m, (gamma_p + gamma_m)], np.hstack([preExp[:, 1][:,None], preExp[:, 0][:,None]]), 1)  \
             + lfmDiagComputeH4(gamma_p, sigma2, X, [gamma_p, (gamma_p + gamma_m)], preExp, 1)
         if self.isNormalised:
-            k0 = self.sensitivity[q] ** 2 / (8 * csqrt(2) * self.mass[q] ** 2 * self.omega[q] ** 2)
+            k0 = self.sensitivity[q] ** 2 / (8 * np.sqrt(2) * self.mass[q] ** 2 * self.omega[q] ** 2)
         else:
-            k0 = csqrt(np.pi) * self.sigma[q] * self.sensitivity[q] ** 2 / (8 * self.mass[q] ** 2 * self.omega[q] ** 2)
+            k0 = np.sqrt(np.pi) * self.sigma[q] * self.sensitivity[q] ** 2 / (8 * self.mass[q] ** 2 * self.omega[q] ** 2)
         k = np.dot(k0, k0) * sk
         return k
 
@@ -291,11 +291,11 @@ class LFMXLFM(Kern):
         D =self.spring[index]  # Par. 2
         C =self.damper[index] # Par. 3
         sigma2 = self.scale[q] # Par. 4
-        sigma = csqrt(sigma2)
+        sigma = np.sqrt(sigma2)
         S =self.sensitivity[index]  # Par. 5
 
         alpha = C/ (2 * m)
-        omega = csqrt(D/ m-alpha** 2)
+        omega = np.sqrt(D/ m-alpha** 2)
 
         # Initialization of vectors and matrices
 
@@ -382,14 +382,14 @@ class LFMXLFM(Kern):
 
         if np.all(np.isreal(omega)):
             if self.isNormalised[q]:
-                K0 = np.prod(S) / (4 * csqrt(2) * np.prod(m) * np.prod(omega))
+                K0 = np.prod(S) / (4 * np.sqrt(2) * np.prod(m) * np.prod(omega))
             else:
-                K0 = sigma * np.prod(S) * csqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))
+                K0 = sigma * np.prod(S) * np.sqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))
         else:
             if self.isNormalised[q2]:
-                K0 = (np.prod(S) / (8 * csqrt(2) * np.prod(m) * np.prod(omega)))
+                K0 = (np.prod(S) / (8 * np.sqrt(2) * np.prod(m) * np.prod(omega)))
             else:
-                K0 = (sigma * np.prod(S) * csqrt(np.pi) / (8 * np.prod(m) * np.prod(omega)))
+                K0 = (sigma * np.prod(S) * np.sqrt(np.pi) / (8 * np.prod(m) * np.prod(omega)))
 
         # Gradient with respect to m, D and C
         for ind_theta in np.arange(3):  # Parameter (m, D or C)
@@ -398,15 +398,15 @@ class LFMXLFM(Kern):
                 if ind_theta == 0: # Gradient wrt m
                     gradThetaM = [1 - ind_par, ind_par]
                     gradThetaAlpha = -C / (2 * np.power(m, 2))
-                    gradThetaOmega = (np.power(C,2) - 2 * m * D) / (2 * (m ** 2) * csqrt(4 * m * D - C ** 2))
+                    gradThetaOmega = (np.power(C,2) - 2 * m * D) / (2 * (m ** 2) * np.sqrt(4 * m * D - C ** 2))
                 if ind_theta == 1: # Gradient wrt D
                     gradThetaM = np.zeros((2))
                     gradThetaAlpha = np.zeros((2))
-                    gradThetaOmega = 1 / csqrt(4 * m * D - np.power(C, 2))
+                    gradThetaOmega = 1 / np.sqrt(4 * m * D - np.power(C, 2))
                 if ind_theta == 2:  # Gradient wrt C
                     gradThetaM = np.zeros((2))
                     gradThetaAlpha = 1 / (2 * m)
-                    gradThetaOmega = -C / (2 * m * csqrt(4 * m * D - C ** 2))
+                    gradThetaOmega = -C / (2 * m * np.sqrt(4 * m * D - C ** 2))
 
                 gradThetaGamma1 = gradThetaAlpha + 1j * gradThetaOmega
                 gradThetaGamma2 = gradThetaAlpha - 1j * gradThetaOmega
@@ -496,7 +496,7 @@ class LFMXLFM(Kern):
                                   + lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preGamma, preExp2, 0, 1  )\
                                   + lfmGradientSigmaH4(gamma2, gamma1, sigma2, X2, preGamma, preExp1, 0, 0 ).T)
             else:
-                matGrad = (np.prod(S) * csqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))) \
+                matGrad = (np.prod(S) * np.sqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))) \
                           * np.real(preKernel
                                     + sigma
                                       * (lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preConsX, 0, 1)
@@ -511,7 +511,7 @@ class LFMXLFM(Kern):
                            +  lfmGradientSigmaH4(gamma1_p, gamma1_m, sigma2, X, preGamma[0,1,3,2], preExp2, 1 )\
                            +  lfmGradientSigmaH4(gamma2_p, gamma2_m, sigma2, X2, preGamma[0,2,3,1], preExp1, 1 ).T )
             else:
-                matGrad = (np.prod(S) * csqrt(np.pi) / (8 * np.prod(m) * np.prod(omega))) \
+                matGrad = (np.prod(S) * np.sqrt(np.pi) / (8 * np.prod(m) * np.prod(omega))) \
                         * (preKernel
                            + sigma
                              * (lfmGradientSigmaH3(gamma1_p, gamma1_m, sigma2, X, X2, preFactors[0,1], 1)\
@@ -533,14 +533,14 @@ class LFMXLFM(Kern):
 
         if np.all(np.isreal(omega)):
             if self.isNormalised[q]:
-                matGrad = (1 / (4 * csqrt(2) * np.prod(m) * np.prod(omega))) * np.real(preKernel)
+                matGrad = (1 / (4 * np.sqrt(2) * np.prod(m) * np.prod(omega))) * np.real(preKernel)
             else:
-                matGrad = (sigma * csqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))) * np.real(preKernel)
+                matGrad = (sigma * np.sqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))) * np.real(preKernel)
         else:
             if self.isNormalised[q2]:
-                matGrad = (1 / (8 * csqrt(2) * np.prod(m) * np.prod(omega))) * (preKernel)
+                matGrad = (1 / (8 * np.sqrt(2) * np.prod(m) * np.prod(omega))) * (preKernel)
             else:
-                matGrad = (sigma * csqrt(np.pi) / (8 * np.prod(m) * np.prod(omega))) * (preKernel)
+                matGrad = (sigma * np.sqrt(np.pi) / (8 * np.prod(m) * np.prod(omega))) * (preKernel)
 
 
         if subComponent:
@@ -629,11 +629,11 @@ class LFMXLFM(Kern):
         D = self.spring[q]# Par. 2
         C = self.damper[q] # Par. 3
         sigma2 = self.scale[q]  # Par. 4
-        sigma = csqrt(sigma2)
+        sigma = np.sqrt(sigma2)
         S = self.sensitivity[q]  # Par. 5
 
         alpha = C / (2 * m)
-        omega = csqrt(D / m - alpha ** 2)
+        omega = np.sqrt(D / m - alpha ** 2)
 
         # Initialization of vectors and matrices
         g = np.zeros((4 + self.output_dim)) #########################
@@ -665,9 +665,9 @@ class LFMXLFM(Kern):
         preKernel = diagH[0] + diagH[1] + diagH[2] + diagH[3]
 
         if self.isNormalised[q]:
-            k0 = np.power(self.sensitivity[q], 2) / (8 * csqrt(2) * np.power(self.mass[q], 2) * np.power(omega,2))
+            k0 = np.power(self.sensitivity[q], 2) / (8 * np.sqrt(2) * np.power(self.mass[q], 2) * np.power(omega,2))
         else:
-            k0 = csqrt(np.pi) * sigma * np.power(self.sensitivity[q], 2) / (8 * np.power(self.mass[q], 2) * np.power(omega, 2))
+            k0 = np.sqrt(np.pi) * sigma * np.power(self.sensitivity[q], 2) / (8 * np.power(self.mass[q], 2) * np.power(omega, 2))
 
         # Gradient with respect to m, D and C
         for ind_theta in range(3):  # Parameter (m, D or C)
@@ -675,15 +675,15 @@ class LFMXLFM(Kern):
             if ind_theta == 0:  # Gradient wrt m
                 gradThetaM = 1
                 gradThetaAlpha = -C / (2 * (m ** 2))
-                gradThetaOmega = (C ** 2 - 2 * m * D) / (2 * (m ** 2) * csqrt(4 * m * D - C ** 2))
+                gradThetaOmega = (C ** 2 - 2 * m * D) / (2 * (m ** 2) * np.sqrt(4 * m * D - C ** 2))
             if ind_theta == 1:  # Gradient wrt D
                 gradThetaM = 0
                 gradThetaAlpha = np.zeros((2))
-                gradThetaOmega = 1 / csqrt(4 * m * D - C ** 2)
+                gradThetaOmega = 1 / np.sqrt(4 * m * D - C ** 2)
             if ind_theta == 2: # Gradient wrt C
                 gradThetaM = 0
                 gradThetaAlpha = 1 / (2 * m)
-                gradThetaOmega = -C / (2 * m * csqrt(4 * m * D - C ** 2))
+                gradThetaOmega = -C / (2 * m * np.sqrt(4 * m * D - C ** 2))
 
         gradThetaGamma1 = gradThetaAlpha + 1j * gradThetaOmega
         gradThetaGamma2 = gradThetaAlpha - 1j * gradThetaOmega
@@ -709,7 +709,7 @@ class LFMXLFM(Kern):
                                             np.hstack(preExp[:, 1], preExp[:, 0]), 1)
                        + lfmDiagGradientSH4(gamma_p, sigma2, X, [gamma_p(gamma_p + gamma_m)], preExp, 1))
         else:
-            matGrad = (S ** 2 * csqrt(np.pi) / (8 * m ** 2 * omega ** 2)) \
+            matGrad = (S ** 2 * np.sqrt(np.pi) / (8 * m ** 2 * omega ** 2)) \
                       * (preKernel + sigma
                       * (lfmDiagGradientSH3(-gamma_m, sigma2, X, preFactors[0], preExp[:, 1], 1)
                          + lfmDiagGradientSH3(-gamma_p, sigma2, X, preFactors[1], preExp[:, 0], 1)
@@ -722,9 +722,9 @@ class LFMXLFM(Kern):
             # Gradients with respect to S
 
         if self.isNormalised[q]:
-            matGrad = (1 / (8 * csqrt(2) * m ** 2 * omega ** 2)) *(preKernel)
+            matGrad = (1 / (8 * np.sqrt(2) * m ** 2 * omega ** 2)) *(preKernel)
         else:
-            matGrad = (sigma * csqrt(np.pi) / (8 * m ** 2 * omega ** 2)) *(preKernel)
+            matGrad = (sigma * np.sqrt(np.pi) / (8 * m ** 2 * omega ** 2)) *(preKernel)
 
         g[4:] = 2 * S * sum(sum(matGrad * dL_dKdiag))
         g = np.real(g)
