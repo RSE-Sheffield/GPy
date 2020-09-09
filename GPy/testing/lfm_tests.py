@@ -1,40 +1,25 @@
-from GPy.kern.src.lfm import *
-import numpy as np
-import sys
-import unittest
+import itertools
 
-gamma1_p = 0.5 + 0.5j
-sigma2 = 0.5
-t1 = np.arange(4)
-t2 = np.arange(3)
+import GPy
+from GPy import kern
 
-def test_lfmUpsilonMatrix():
-    result = lfmUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+# my_lfm = kern.LFM(input_dim = 1 , output_dim = 1)
 
-def test_lfmUpsilonVector():
-    result = lfmUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+# print(my_lfm)
 
-def test_lfmGradientUpsilonMatrix():
-    result = lfmGradientUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+k_lfmxlfm = [kern.LFMXLFM(input_dim = 1 , output_dim = 1) for i in range(9)]
 
-def test_lfmGradientUpsilonVector():
-    result = lfmGradientUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+# print(my_lfmxlfm)
 
-def test_lfmGradientSigmaUpsilonMatrix():
-    result = lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientSigmaUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+cov_dict = {(0,0): k_lfmxlfm[0],
+            (0,1): k_lfmxlfm[1],
+            (0,2): k_lfmxlfm[2],
+            (1,0): k_lfmxlfm[3],
+            (1,1): k_lfmxlfm[4],
+            (1,2): k_lfmxlfm[5],
+            (2,0): k_lfmxlfm[6],
+            (2,1): k_lfmxlfm[7],
+            (2,2): k_lfmxlfm[8]}
 
-def test_lfmGradientSigmaUpsilonVector():
-    result = lfmGradientSigmaUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientSigmaUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
-
+k = GPy.kern.MultioutputKern(k_lfmxlfm, cross_covariances=cov_dict)
+#k = GPy.kern.MultioutputKern([k1, k2])
