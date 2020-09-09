@@ -1,3 +1,5 @@
+# This is *very* work in progress!
+
 import itertools
 
 import GPy
