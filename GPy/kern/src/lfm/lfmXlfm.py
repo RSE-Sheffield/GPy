@@ -79,10 +79,10 @@ class LFMXLFM(Kern):
 
         # Creation  of the time matrices
 
-        if self.omega_isreal[q] and self.omega_isreal[q2]:
+        if self.omega_isreal and self.omega_isreal:
             # Pre-computations to increase speed
-            gamma1 = self.alpha[q] + 1j * self.omega[q]
-            gamma2 = self.alpha[q2] + 1j * self.omega[q2]
+            gamma1 = self.alpha + 1j * self.omega
+            gamma2 = self.alpha + 1j * self.omega
             # print('gamma1')
             # print(gamma1)
             # print('gamma2')
@@ -95,27 +95,27 @@ class LFMXLFM(Kern):
             preExp2 = np.exp(-gamma2 * X2)
             # Actual computation  of the kernel
             sK = np.real(
-                        lfmComputeH3(gamma1, gamma2, self.scale[q], X, X2, preConsX, 0, 1)[0]
-                        + lfmComputeH3(gamma2, gamma1, self.scale[q], X2, X, preConsX[1] - preConsX[0], 0, 0)[0].T
-                        + lfmComputeH4(gamma1, gamma2, self.scale[q], X, preGamma, preExp2, 0, 1)[0]
-                        + lfmComputeH4(gamma2, gamma1, self.scale[q], X2, preGamma, preExp1, 0, 0)[0].T
+                        lfmComputeH3(gamma1, gamma2, self.scale, X, X2, preConsX, 0, 1)[0]
+                        + lfmComputeH3(gamma2, gamma1, self.scale, X2, X, preConsX[1] - preConsX[0], 0, 0)[0].T
+                        + lfmComputeH4(gamma1, gamma2, self.scale, X, preGamma, preExp2, 0, 1)[0]
+                        + lfmComputeH4(gamma2, gamma1, self.scale, X2, preGamma, preExp1, 0, 0)[0].T
                         )
-            if self.isNormalised[q]:
-                K0 = (np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
-                        4 * np.sqrt(2) * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
+            if self.isNormalised:
+                K0 = (np.dot(self.sensitivity, self.sensitivity)) / (
+                        4 * np.sqrt(2) * self.mass * self.mass * self.omega*self.omega)
             else:
-                K0 = (np.sqrt(self.scale[q]) * np.sqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
-                        4 * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
+                K0 = (np.sqrt(self.scale) * np.sqrt(np.pi) * np.dot(self.sensitivity, self.sensitivity)) / (
+                        4 * self.mass * self.mass * self.omega*self.omega)
 
             K = K0 * sK
         else:
             # Pre-computations to increase the speed
             preExp1 = np.zeros((np.max(np.shape(X)), 2))
             preExp2 = np.zeros((np.max(np.shape(X2)), 2))
-            gamma1_p = self.alpha[q]  + 1j * self.omega[q]
-            gamma1_m = self.alpha[q]  - 1j * self.omega[q]
-            gamma2_p = self.alpha[q2] + 1j * self.omega[q2]
-            gamma2_m = self.alpha[q2] - 1j * self.omega[q2]
+            gamma1_p = self.alpha  + 1j * self.omega
+            gamma1_m = self.alpha  - 1j * self.omega
+            gamma2_p = self.alpha + 1j * self.omega
+            gamma2_m = self.alpha - 1j * self.omega
             preGamma = np.array([   gamma1_p + gamma2_p,
                                     gamma1_p + gamma2_m,
                                     gamma1_m + gamma2_p,
@@ -133,17 +133,17 @@ class LFMXLFM(Kern):
             preExp2[:, 1] = np.exp(-gamma2_m * X2).ravel()
             # Actual  computation of the kernel
             sK = (
-                    lfmComputeH3(gamma1_p, gamma1_m, self.scale[q], X, X2, preFactors[np.array([0, 1])], 1)[0]
-                    + lfmComputeH3(gamma2_p, gamma2_m, self.scale[q], X2, X, preFactors[np.array([2, 3])], 1)[0].T
-                    + lfmComputeH4(gamma1_p, gamma1_m, self.scale[q], X, preGamma[np.array([0, 1, 3, 2])], preExp2, 1)[0]
-                    + lfmComputeH4(gamma2_p, gamma2_m, self.scale[q], X2, preGamma[np.array([0, 2, 3, 1])], preExp1, 1)[0].T
+                    lfmComputeH3(gamma1_p, gamma1_m, self.scale, X, X2, preFactors[np.array([0, 1])], 1)[0]
+                    + lfmComputeH3(gamma2_p, gamma2_m, self.scale, X2, X, preFactors[np.array([2, 3])], 1)[0].T
+                    + lfmComputeH4(gamma1_p, gamma1_m, self.scale, X, preGamma[np.array([0, 1, 3, 2])], preExp2, 1)[0]
+                    + lfmComputeH4(gamma2_p, gamma2_m, self.scale, X2, preGamma[np.array([0, 2, 3, 1])], preExp1, 1)[0].T
                 )
-            if self.isNormalised[q]:
-                K0 = np.dot(self.sensitivity[q], self.sensitivity[q2]) / (
-                        8 * np.sqrt(2) * self.mass[q] * self.mass [q2]*  self.omega[q]*self.omega[q2])
+            if self.isNormalised:
+                K0 = np.dot(self.sensitivity, self.sensitivity) / (
+                        8 * np.sqrt(2) * self.mass * self.mass *  self.omega*self.omega)
             else:
-                K0 = (np.sqrt(self.scale[q]) * np.sqrt(np.pi) * np.dot(self.sensitivity[q], self.sensitivity[q2])) / (
-                        8 * self.mass[q] * self.mass[q2] * self.omega[q]*self.omega[q2])
+                K0 = (np.sqrt(self.scale) * np.sqrt(np.pi) * np.dot(self.sensitivity, self.sensitivity)) / (
+                        8 * self.mass * self.mass * self.omega*self.omega)
 
             K = K0 * sK
         return K
