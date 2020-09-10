@@ -76,31 +76,6 @@ class LFMXLFM(Kern):
     def K(self, X, X2=None):
         if X2 is None:
             X2 = X
-        print('X2')
-        print(X2)
-        slices = index_to_slices(X[:, self.index_dim])
-        slices2 = index_to_slices(X2[:, self.index_dim])
-        # slices = index_to_slices(self.output_index)
-        # slices2 = index_to_slices(self.output_index)
-        target = np.zeros((X.shape[0], X2.shape[0]))
-        for i in range(len(slices)):
-            for j in range(len(slices2)):
-                for k in range(len(slices[i])):
-                    for l in range(len(slices2[j])):
-                        K_sub_matrix = self.K_sub_matrix(i, X[slices[i][k], :-1], j, X2[slices2[j][l], :-1])
-                        target.__setitem__((slices[i][k], slices2[j][l]), K_sub_matrix)
-        return target
-
-
-    def K_sub_matrix(self, q, X, q2= None, X2=None):
-        # This K is a sub matrix as a part of K. It is covariance matrix between a pair of outputs.
-        # The variable q and q2 are the index of outputs.
-        # The variable X and X2 are subset of the X and X2 in K.
-        if X2 is None:
-            X2 = X
-        if q2 is None:
-            q2 = q
-        assert (X.shape[1] == 1 and X.shape[1] == 1), 'Input can only have one column'# + str(X) + str(X2)
 
         # Creation  of the time matrices
 
