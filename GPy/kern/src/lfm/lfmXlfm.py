@@ -58,7 +58,6 @@ class LFMXLFM(Kern):
         # alpha and omega are intermediate variables used in the model and gradient for optimisation
         self.alpha = self.damper / (2 * self.mass)
         self.omega = np.sqrt(self.spring / self.mass - self.alpha * self.alpha)
-        print(self.omega)
         self.omega_isreal = np.isreal(self.omega)
 
         self.gamma = self.alpha + 1j * self.omega
