@@ -13,7 +13,7 @@ class LFMXLFM(Kern):
     """
 
     def __init__(self, input_dim, output_dim, scale=None, mass=None, spring=None, damper=None, sensitivity=None,
-                 active_dims=None, isNormalised=None, name='lfm'):
+                 active_dims=None, isNormalised=None, name='lfmXlfm'):
 
         super(LFMXLFM, self).__init__(input_dim, active_dims, name)
         self.output_dim = output_dim
