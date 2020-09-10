@@ -22,7 +22,7 @@ def test_make_LFMXLFM():
     # Test that we can make an LFMXLFM kernel
     t_lfmxlfm = kern.LFMXLFM(input_dim = 1 , output_dim = 1)
 
-def test_K_LFMXLFM():
+def test_LFMXLFM_K():
     # Test that this kernel can produce a covariance matrix
     x_eg=np.atleast_2d(np.linspace(-1.,1.,9)).transpose()
     t_lfmxlfm = kern.LFMXLFM(input_dim = 1 , output_dim = 1)
