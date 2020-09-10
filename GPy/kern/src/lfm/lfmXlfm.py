@@ -1,4 +1,5 @@
 from GPy.kern import Kern
+from GPy.kern.src.lfm import *
 import numpy as np
 from GPy.core.parameterization import Param
 from paramz.transformations import Logexp
