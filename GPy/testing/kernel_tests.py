@@ -550,6 +550,10 @@ class KernelGradientTestsContinuous(unittest.TestCase):
         k = GPy.kern.Add(ks)
         self.assertTrue(check_kernel_gradient_functions(k, X=self.X, X2=self.X2, verbose=verbose))
 
+    def test_lfmXlfm(self):
+        k = GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 1)
+        self.assertTrue(check_kernel_gradient_functions(k, X=self.X, X2=self.X2))
+
 class KernelTestsMiscellaneous(unittest.TestCase):
     def setUp(self):
         N, D = 100, 10

@@ -18,16 +18,6 @@ x_pred = toydata_baseline[2] # x values over which to predict
 y = toydata_baseline[3] # Observed y (training set)
 y_test = toydata_baseline[4] # Observed y (test set)
 
-def test_make_LFMXLFM():
-    # Test that we can make an LFMXLFM kernel
-    t_lfmxlfm = kern.LFMXLFM(input_dim = 1 , output_dim = 1)
-
-def test_LFMXLFM_K():
-    # Test that this kernel can produce a covariance matrix
-    x_eg=np.atleast_2d(np.linspace(-1.,1.,9)).transpose()
-    t_lfmxlfm = kern.LFMXLFM(input_dim = 1 , output_dim = 1)
-    t_lfmxlfm.K(x_eg,x_eg)
-
 def test_multi_LFM():
     k_lfmxlfm = [kern.LFMXLFM(input_dim = 1 , output_dim = 1) for i in range(9)]
 

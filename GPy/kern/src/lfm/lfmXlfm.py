@@ -256,9 +256,9 @@ class LFMXLFM(Kern):
                     dimcovGrad = np.shape.max(covGrad)
                     covGrad = covGrad.reshape(dimcovGrad,1,order='F').copy()
 
-        assert np.shape(X)[1] == 1 or np.shape(X2)[1] == 1,  'Input can only have one column. np.shape(X) = ' + str(np.shape(X)) + 'np.shape(X2) =' + str(np.shape(X2))
-        assert  self.scale[q] == self.scale[q2], '''Kernels cannot be cross combined if they have different inverse 
-                                                 widths. self.scale[%d] = %.5f = self.scale[%d] = %.5f''' % (q, q2, self.scale[q], self.scale[q2])
+        # assert np.shape(X)[1] == 1 or np.shape(X2)[1] == 1,  'Input can only have one column. np.shape(X) = ' + str(np.shape(X)) + 'np.shape(X2) =' + str(np.shape(X2))
+        # assert  self.scale[q] == self.scale[q2], '''Kernels cannot be cross combined if they have different inverse 
+        #                                          widths. self.scale[%d] = %.5f = self.scale[%d] = %.5f''' % (q, q2, self.scale[q], self.scale[q2])
 
         # Parameters of the simulation (in the order provided by kernExtractParam in the matlab code)
         index = np.array([q,q2])
