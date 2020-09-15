@@ -1,4 +1,4 @@
-# This is *very* work in progress!
+# This will become a regression test for LFMs.
 
 import pickle
 
@@ -18,20 +18,7 @@ x_pred = toydata_baseline[2] # x values over which to predict
 y = toydata_baseline[3] # Observed y (training set)
 y_test = toydata_baseline[4] # Observed y (test set)
 
-def test_multi_LFM():
-    k_lfmxlfm = [kern.LFMXLFM(input_dim = 1 , output_dim = 1) for i in range(9)]
 
-    cov_dict = {(0,0): k_lfmxlfm[0],
-                (0,1): k_lfmxlfm[1],
-                (0,2): k_lfmxlfm[2],
-                (1,0): k_lfmxlfm[3],
-                (1,1): k_lfmxlfm[4],
-                (1,2): k_lfmxlfm[5],
-                (2,0): k_lfmxlfm[6],
-                (2,1): k_lfmxlfm[7],
-                (2,2): k_lfmxlfm[8]}
-
-    k = GPy.kern.MultioutputKern(k_lfmxlfm, cross_covariances=cov_dict)
     #k = GPy.kern.MultioutputKern([k1, k2])
 
     #bob = k.K(x,x)
