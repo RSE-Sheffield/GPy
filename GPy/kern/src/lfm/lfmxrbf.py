@@ -68,7 +68,7 @@ class LFMXRBF(Kern):
                 K = K0 * sK
             return K
 
-    def _update_gradients_full(self, X1, X2=None, dL_dK=None, meanVector=None):
+    def update_gradients_full(self, X1, X2=None, dL_dK=None, meanVector=None):
 
         # LFMXRBFKERNGRADIENT Compute gradient between the LFM and RBF kernels.
         # FORMAT

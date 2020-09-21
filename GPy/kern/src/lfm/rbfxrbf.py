@@ -45,7 +45,7 @@ class RBFXRBF(Kern):
             k = k * csqrt(self.unilateral_kernels[q1].inv_l / (2 * np.pi))
         return [k, sk, n2]
 
-    def  _update_gradients_full(self, X1, X2=None, dL_dK=None, meanVector=None):
+    def  update_gradients_full(self, X1, X2=None, dL_dK=None, meanVector=None):
 
         # RBFKERNGRADIENT Gradient of RBF kernel's parameters.
         # FORMAT
