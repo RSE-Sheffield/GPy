@@ -553,15 +553,15 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     #3 convolved "sub-kernels" for latent force models
     def test_lfmXlfm(self):
         k = GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 1)
-        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, X2 = self.X2, verbose = verbose))
+        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, verbose = verbose))
     
     def test_lfmXrbf(self):
         k = GPy.kern.LFMXRBF(input_dim = 1 , output_dim = 1)
-        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, X2 = self.X2, verbose = verbose))
+        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, verbose = verbose))
 
     def test_rbfXrbf(self):
         k = GPy.kern.RBFXRBF(input_dim = 1 , output_dim = 1)
-        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, X2 = self.X2, verbose = verbose))
+        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, verbose = verbose))
     
     #multiple output latent force model kernel
     def test_lfm(self):
@@ -578,8 +578,7 @@ class KernelGradientTestsContinuous(unittest.TestCase):
         k = GPy.kern.MultioutputKern(k_lfmxlfm, cross_covariances = cov_dict)
         # requires a check with appropriate test data for multi output kernel
         Xt,_,_ = GPy.util.multioutput.build_XY([self.X, self.X])
-        X2t,_,_ = GPy.util.multioutput.build_XY([self.X2, self.X2])
-        self.assertTrue(check_kernel_gradient_functions(k, X=Xt, X2=X2t, verbose=verbose, fixed_X_dims=-1))
+        self.assertTrue(check_kernel_gradient_functions(k, X=Xt, verbose=verbose, fixed_X_dims=-1))
         
 class KernelTestsMiscellaneous(unittest.TestCase):
     def setUp(self):
