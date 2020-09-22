@@ -58,6 +58,10 @@ def test_multioutput_optimisation():
     
     plt.savefig(os.path.join(result_dir, "covplot_pre.png"))
 
+    # randomise model
+
+    # m.randomize() # this causes the test to error
+
     # optimise model
 
     m.optimize()
