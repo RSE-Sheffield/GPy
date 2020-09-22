@@ -1,6 +1,8 @@
 # This is currently completely broken, but aspires to be a representation of the
 # rbfXrbf convolved kernel for use in latent force models.
 
+import numpy as np
+
 class RBFXRBF(Kern):
 
     def __init__(self, input_dim, output_dim, name='rbfXrbf'):
