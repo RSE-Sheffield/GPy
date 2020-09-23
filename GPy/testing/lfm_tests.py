@@ -25,6 +25,19 @@ x_pred = toydata_baseline[2] # x values over which to predict
 y = toydata_baseline[3] # Observed y (training set)
 y_test = toydata_baseline[4] # Observed y (test set)
 
+def test_lfmxlfm_update_gradients_full():
+    #this test duplicates part of `check_kernel_gradient_functions()` and should be removed
+
+    k = GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 1)
+    
+    #k = GPy.kern.RBF(input_dim = 1) #this works
+
+    X = np.random.randn(10, k.input_dim)
+
+    dL_dK = np.random.rand(X.shape[0], X.shape[0])
+    
+    k.update_gradients_full(dL_dK, X)
+
 def test_multioutput_optimisation():
 
     # build kernel
