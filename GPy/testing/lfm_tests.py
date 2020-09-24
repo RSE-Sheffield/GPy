@@ -28,7 +28,7 @@ y_test = toydata_baseline[4] # Observed y (test set)
 def test_lfmxlfm_update_gradients_full():
     #this test duplicates part of `check_kernel_gradient_functions()` and should be removed
 
-    k = GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 1)
+    k = GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 2)
     
     #k = GPy.kern.RBF(input_dim = 1) #this works
 

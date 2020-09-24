@@ -200,7 +200,7 @@ class LFMXLFM(Kern):
 
 
 
-    def _update_gradients(self, q, q2, X, X2=None, dL_dK=None, meanVector=None):
+    def update_gradients_full(self, dL_dK, X, X2=None, meanVector=None):
         """
         Given the derivative of the objective wrt the covariance matrix
         (dL_dK), compute the gradient wrt the parameters of this kernel,
@@ -234,9 +234,11 @@ class LFMXLFM(Kern):
 
         # KERN
 
+        if X2 is None: X2 = X
+
         subComponent = False  # This is just a flag that indicates if this kernel is part of a bigger kernel (SDLFM)
         covGrad = dL_dK
-        if covGrad is None and  meanVector is None:
+        if covGrad is None and meanVector is None:
             covGrad = X2
             X2 = X
         elif covGrad is not None and  meanVector is not None:
@@ -261,16 +263,16 @@ class LFMXLFM(Kern):
         #                                          widths. self.scale[%d] = %.5f = self.scale[%d] = %.5f''' % (q, q2, self.scale[q], self.scale[q2])
 
         # Parameters of the simulation (in the order provided by kernExtractParam in the matlab code)
-        index = np.array([q,q2])
-        m =self.mass[index] # Par. 1
-        D =self.spring[index]  # Par. 2
-        C =self.damper[index] # Par. 3
-        sigma2 = self.scale[q] # Par. 4
+        
+        m = self.mass.values # Par. 1
+        D = self.spring.values  # Par. 2
+        C = self.damper.values # Par. 3
+        sigma2 = self.scale.values[0] # Par. 4
         sigma = np.sqrt(sigma2)
-        S =self.sensitivity[index]  # Par. 5
+        S = self.sensitivity.values # Par. 5
 
-        alpha = C/ (2 * m)
-        omega = np.sqrt(D/ m-alpha** 2)
+        alpha = C / (2 * m)
+        omega = np.sqrt(D / m - alpha ** 2)
 
         # Initialization of vectors and matrices
 
@@ -356,12 +358,12 @@ class LFMXLFM(Kern):
             preKernel = computeH[0]+ computeH[1].T + computeH[2]+ computeH[3].T
 
         if np.all(np.isreal(omega)):
-            if self.isNormalised[q]:
+            if self.isNormalised[0]:
                 K0 = np.prod(S) / (4 * np.sqrt(2) * np.prod(m) * np.prod(omega))
             else:
                 K0 = sigma * np.prod(S) * np.sqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))
         else:
-            if self.isNormalised[q2]:
+            if self.isNormalised[1]:
                 K0 = (np.prod(S) / (8 * np.sqrt(2) * np.prod(m) * np.prod(omega)))
             else:
                 K0 = (sigma * np.prod(S) * np.sqrt(np.pi) / (8 * np.prod(m) * np.prod(omega)))
@@ -464,7 +466,7 @@ class LFMXLFM(Kern):
         # Gradients with respect to sigma
 
         if np.all(np.isreal(omega)):
-            if self.isNormalised[q]:
+            if self.isNormalised[0]:
                 matGrad = K0 * \
                           np.real(lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preConsX, 0, 1)\
                                   + lfmGradientSigmaH3(gamma2, gamma1, sigma2, X2, X, preConsX[1] - preConsX[0], 0, 0).T\
@@ -479,7 +481,7 @@ class LFMXLFM(Kern):
                                         +  lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preGamma, preExp2, 0, 1  )
                                         +  lfmGradientSigmaH4(gamma2, gamma1, sigma2, X2, preGamma, preExp1, 0, 0 ).T))
         else:
-            if self.isNormalised[q]:
+            if self.isNormalised[0]:
                 matGrad = K0 * \
                           (lfmGradientSigmaH3(gamma1_p, gamma1_m, sigma2, X, X2, preFactors[0,1], 1)\
                            +  lfmGradientSigmaH3(gamma2_p, gamma2_m, sigma2, X2, X, preFactors[2,3], 1).T\
@@ -507,12 +509,12 @@ class LFMXLFM(Kern):
         # Gradients with respect to S
 
         if np.all(np.isreal(omega)):
-            if self.isNormalised[q]:
+            if self.isNormalised[0]:
                 matGrad = (1 / (4 * np.sqrt(2) * np.prod(m) * np.prod(omega))) * np.real(preKernel)
             else:
                 matGrad = (sigma * np.sqrt(np.pi) / (4 * np.prod(m) * np.prod(omega))) * np.real(preKernel)
         else:
-            if self.isNormalised[q2]:
+            if self.isNormalised[1]:
                 matGrad = (1 / (8 * np.sqrt(2) * np.prod(m) * np.prod(omega))) * (preKernel)
             else:
                 matGrad = (sigma * np.sqrt(np.pi) / (8 * np.prod(m) * np.prod(omega))) * (preKernel)
@@ -543,43 +545,6 @@ class LFMXLFM(Kern):
         self.spring.gradient = np.zeros_like(self.spring.gradient)
         self.damper.gradient = np.zeros_like(self.damper.gradient)
         self.sensitivity.gradient = np.zeros_like(self.sensitivity.gradient)
-
-    def update_gradients_full(self, dL_dK, X, X2=None):
-        self.reset_gradients()
-        if X2 is None:
-            X2 = X
-        slices = index_to_slices(X[:, self.index_dim])
-        slices2 = index_to_slices(X2[:, self.index_dim])
-        normaliseRegardingToBatchSize = 0
-        g = np.zeros((self.output_dim, 4 + self.output_dim))
-        if X2 is not None:
-            slices2 = index_to_slices(X2[:, self.index_dim])
-
-            for j in range(len(slices2)):
-                for i in range(len(slices)):
-                    for l in range(len(slices2[j])):
-                        for k in range(len(slices[i])):
-                            [g1,g2]=self._update_gradients(i, j, X[slices[i][k], :-1], X2[slices2[j][l], :-1],
-                                                           dL_dK[slices[i][k], slices2[j][l]])
-                            normaliseRegardingToBatchSize +=1
-                            g[i] += g1
-                            g[j] += g2
-        else:
-            for j in range(len(slices2)):
-                for i in range(len(slices)):
-                    for l in range(len(slices2[j])):
-                        for k in range(len(slices[i])):
-                            [g1,g2]=self._update_gradients(i, j, X[slices[i][k], :-1], X2[slices2[j][l], :-1],
-                                                           dL_dK[slices[i][k], slices2[j][l]])
-                            normaliseRegardingToBatchSize += 1
-                            g[i] += g1
-                            g[j] += g2
-        normalisedg = g/normaliseRegardingToBatchSize
-        self.scale.gradient += np.sum([(normalisedg[:, 3]) * (-2 / np.power(self.scale, 2))])/2
-        self.mass.gradient += normalisedg[:, 0]
-        self.spring.gradient += normalisedg[:, 1]
-        self.damper.gradient += normalisedg[:, 2]
-        self.sensitivity.gradient += normalisedg[:, 4:]
 
     def _update_gradients_diag_wrapper(self, q, X, dL_dKdiag):
         #  LFMKERNDIAGGRADIENT Compute the gradient of the LFM kernel's diagonal wrt parameters.
