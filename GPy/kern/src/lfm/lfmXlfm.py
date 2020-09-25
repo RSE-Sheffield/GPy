@@ -59,7 +59,7 @@ class LFMXLFM(Kern):
         # alpha and omega are intermediate variables used in the model and gradient for optimisation
         self.alpha = self.damper / (2 * self.mass)
         self.omega = np.sqrt(self.spring / self.mass - self.alpha * self.alpha)
-        self.omega_isreal = np.isreal(self.omega)
+        self.omega_isreal = np.isreal(self.omega).all()
 
         self.gamma = self.alpha + 1j * self.omega
 
@@ -80,7 +80,7 @@ class LFMXLFM(Kern):
 
         # Creation  of the time matrices
 
-        if self.omega_isreal and self.omega_isreal:
+        if self.omega_isreal:
             # Pre-computations to increase speed
             gamma1 = self.alpha + 1j * self.omega
             gamma2 = self.alpha + 1j * self.omega
