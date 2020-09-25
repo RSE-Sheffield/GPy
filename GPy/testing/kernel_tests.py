@@ -565,7 +565,7 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     
     #multiple output latent force model kernel
     def test_lfm(self):
-        k_lfmxlfm = [GPy.kern.LFMXLFM(input_dim = 1 , output_dim = 2) for i in range(9)]
+        k_lfmxlfm = [GPy.kern.LFMXLFM(input_dim = 1) for i in range(9)]
         cov_dict = {(0,0): k_lfmxlfm[0],
                     (0,1): k_lfmxlfm[1],
                     (0,2): k_lfmxlfm[2],
