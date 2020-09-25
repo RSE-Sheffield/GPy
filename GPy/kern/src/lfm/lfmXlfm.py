@@ -526,8 +526,8 @@ class LFMXLFM(Kern):
             else:
                     matGrad = (meanVector * matGrad).T
         # TODO
-        g1[4:] = np.dot(S[1][:, None].T, sum(sum(matGrad * covGrad)))
-        g2[4:] = np.dot(S[0][:, None].T, sum(sum(matGrad * covGrad)))
+        g1[4:] = sum(sum(S[1] * matGrad * covGrad))
+        g2[4:] = sum(sum(S[0] * matGrad * covGrad))
 
         g2[3] = 0  # Otherwise is counted twice
 
