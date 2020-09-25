@@ -13,36 +13,36 @@ class LFMXLFM(Kern):
     LFM X LFM convolved kernel todo: expand.
     """
 
-    def __init__(self, input_dim, output_dim, scale=None, mass=None, spring=None, damper=None, sensitivity=None,
+    def __init__(self, input_dim, scale=None, mass=None, spring=None, damper=None, sensitivity=None,
                  active_dims=None, isNormalised=None, name='lfmXlfm'):
 
         super(LFMXLFM, self).__init__(input_dim, active_dims, name)
-        self.output_dim = output_dim
+        # Parameters go in as vectors of length 2, one parameter per kernel in the cross
 
         if scale is None:
-            scale =  np.ones(self.output_dim) # np.random.rand(self.output_dim)
+            scale =  np.ones(2) # np.random.rand(self.output_dim)
         self.scale = Param('scale', scale)
 
         if mass is None:
-            mass =  np.ones(self.output_dim) # np.random.rand(self.output_dim)
+            mass =  np.ones(2) # np.random.rand(self.output_dim)
         self.mass = Param('mass', mass)
 
         if spring is None:
-            spring =  np.ones(self.output_dim) # np.random.rand(self.output_dim)
+            spring =  np.ones(2) # np.random.rand(self.output_dim)
         self.spring = Param('spring', spring)
 
         if damper is None:
-            damper = np.ones(self.output_dim) # np.random.rand(self.output_dim)
+            damper = np.ones(2) # np.random.rand(self.output_dim)
         self.damper = Param('damper', damper)
 
         if sensitivity is None:
-            sensitivity = np.ones((self.output_dim, self.output_dim)) #np.random.rand(self.output_dim) # np.ones((self.output_dim, self.input_dim))
+            sensitivity = np.ones((2, 2)) #np.random.rand(self.output_dim) # np.ones((self.output_dim, self.input_dim))
         self.sensitivity = Param('sensitivity', sensitivity)
 
         self.link_parameters(self.scale, self.mass, self.spring, self.damper, self.sensitivity)
 
         if isNormalised is None:
-            isNormalised = [True for _ in range(self.output_dim)]
+            isNormalised = [True for _ in range(2)]
         self.isNormalised = isNormalised
 
         self.recalculate_intermediate_variables()
@@ -153,7 +153,7 @@ class LFMXLFM(Kern):
         assert X.shape[1] == 2, 'Input can only have one column'
         slices = index_to_slices(X[:,self.index_dim])
         target = np.zeros((X.shape[0]))  #.astype(np.complex128)
-        for q, slices_i in zip(range(self.output_dim), slices):
+        for q, slices_i in zip(range(2), slices):
             for s in slices_i:
                 Kdiag_sub = np.real(self.Kdiag_sub(q, X[s, :-1]))
                 np.copyto(target[s], Kdiag_sub)
@@ -276,8 +276,8 @@ class LFMXLFM(Kern):
 
         # Initialization of vectors and matrices
 
-        g1 = np.zeros((4 + self.output_dim))
-        g2 = np.zeros((4 + self.output_dim))
+        g1 = np.zeros((4 + 2))
+        g2 = np.zeros((4 + 2))
 
         # Precomputations
 
@@ -576,7 +576,7 @@ class LFMXLFM(Kern):
         omega = np.sqrt(D / m - alpha ** 2)
 
         # Initialization of vectors and matrices
-        g = np.zeros((4 + self.output_dim)) #########################
+        g = np.zeros((4 + 2)) #########################
 
         # Precomputations
         diagH = cell(1, 4)
@@ -674,7 +674,7 @@ class LFMXLFM(Kern):
         self.reset_gradients()
         slices = index_to_slices(X[:, self.index_dim])
         normaliseRegardingToBatchSize = 0
-        g = np.zeros((self.output_dim, 4 + self.output_dim))
+        g = np.zeros((2, 4 + 2))
         for i in range(len(slices)):
             for k in range(len(slices[i])):
                 g[i]=self._update_gradients_diag_wrapper(i, X[slices[i][k], :], dL_dKdiag[slices[i][k]])
