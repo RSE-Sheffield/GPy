@@ -20,7 +20,7 @@ class LFMXLFM(Kern):
         # Parameters go in as vectors of length 2, one parameter per kernel in the cross
 
         if scale is None:
-            scale =  np.ones(2) # np.random.rand(self.output_dim)
+            scale =  np.ones(1) # np.random.rand(self.output_dim)
         self.scale = Param('scale', scale)
 
         if mass is None:
