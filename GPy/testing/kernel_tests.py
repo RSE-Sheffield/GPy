@@ -539,7 +539,9 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     #3 convolved "sub-kernels" for latent force models
     def test_lfmXlfm(self):
         k = GPy.kern.LFMXLFM(input_dim = 1)
-        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, X2 = self.X2, verbose = verbose))
+        X = np.random.randn(10, k.input_dim)
+        X2 = np.random.randn(10, k.input_dim)
+        self.assertTrue(check_kernel_gradient_functions(k, X = X, X2 = X2, verbose = verbose))
     
     def test_lfmXrbf(self):
         k = GPy.kern.LFMXRBF(input_dim = 1)
