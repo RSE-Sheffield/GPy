@@ -50,8 +50,6 @@ class LFMXLFM(Kern):
         # The kernel ALLWAYS puts the output index (the q for qth output) in the end of each rows.
         self.index_dim = -1
 
-
-
     def recalculate_intermediate_variables(self):
         # Get length scale out.
         self.sigma2 = self.scale[0] #in gpmat, the first kernel's scale is used and the scond apparently ignored
@@ -71,8 +69,6 @@ class LFMXLFM(Kern):
         '''
         self.recalculate_intermediate_variables()
         # super(LFM, self).parameters_changed()
-
-
 
     def K(self, X, X2=None):
         if X2 is None:
@@ -159,46 +155,6 @@ class LFMXLFM(Kern):
                 np.copyto(target[s], Kdiag_sub)
 
         return target
-
-    def Kdiag_sub(self, q, X):
-
-        def lfmDiagComputeH3(gamma, sigma2, t, factor, preExp, mode):
-            if mode:
-                vec = np.multiply(preExp, lfmUpsilonVector(gamma, sigma2, t)) * factor
-            else:
-                temp = np.multiply(preExp, lfmUpsilonVector(gamma, sigma2, t))
-                vec = 2 * np.real(temp / factor[0]) - temp / factor[1]
-            return vec
-
-        def lfmDiagComputeH4(gamma, sigma2, t, factor, preExp, mode):
-            if mode:
-                vec = (preExp[:, 0] / factor[0] - 2 * preExp[:, 1] / factor[1]) * lfmUpsilonVector(gamma, sigma2, t)
-            else:
-                temp = lfmUpsilonVector(gamma, sigma2, t)
-                temp2 =temp * np.conj(preExp) / factor[1]
-                vec = (temp*preExp) / factor[0] - 2 * np.real(temp2)
-            return vec
-
-       # preExp = np.zeros((len(X), 2)).astype(np.complex128)
-        gamma_p = self.alpha[q] + 1j * self.omega[q]
-        gamma_m = self.alpha[q] - 1j * self.omega[q]
-        preFactors = np.array([2 / (gamma_p + gamma_m) - 1 / gamma_m,
-                               2 / (gamma_p + gamma_m) - 1 / gamma_p])
-        preExp = np.hstack([np.exp(-gamma_p * X), np.exp(-gamma_m * X)])
-        sigma2 = self.sigma2
-        # Actual computation of the kernel
-        sk = lfmDiagComputeH3(-gamma_m, sigma2, X, preFactors[0], preExp[:, 1], 1)  \
-            + lfmDiagComputeH3(-gamma_p, sigma2, X, preFactors[1], preExp[:, 0], 1)  \
-            + lfmDiagComputeH4(gamma_m, sigma2, X, [gamma_m, (gamma_p + gamma_m)], np.hstack([preExp[:, 1][:,None], preExp[:, 0][:,None]]), 1)  \
-            + lfmDiagComputeH4(gamma_p, sigma2, X, [gamma_p, (gamma_p + gamma_m)], preExp, 1)
-        if self.isNormalised:
-            k0 = self.sensitivity[q] ** 2 / (8 * np.sqrt(2) * self.mass[q] ** 2 * self.omega[q] ** 2)
-        else:
-            k0 = np.sqrt(np.pi) * self.sigma[q] * self.sensitivity[q] ** 2 / (8 * self.mass[q] ** 2 * self.omega[q] ** 2)
-        k = np.dot(k0, k0) * sk
-        return k
-
-
 
     def update_gradients_full(self, dL_dK, X, X2=None, meanVector=None):
         """
@@ -538,7 +494,6 @@ class LFMXLFM(Kern):
 
         return [g1, g2]
     
-
     def reset_gradients(self):
         self.scale.gradient = np.zeros_like(self.scale.gradient)
         self.mass.gradient = np.zeros_like(self.mass.gradient)
