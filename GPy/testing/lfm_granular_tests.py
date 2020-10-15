@@ -2,41 +2,37 @@ from GPy.kern.src.lfm import *
 import numpy as np
 import sys
 import unittest
+import scipy.io as sio
 
-gamma1_p = 0.5 + 0.5j
+gamma = 0.5 + 0.5j
 sigma2 = 0.5
-t1 = np.arange(4)
-t2 = np.arange(3)
+
+baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
+X = baseline.get('X')
 
 def test_lfmUpsilonMatrix():
-    result = lfmUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmUpsilonMatrix(gamma, sigma2, X, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_upsilonmatrix'))
 
 def test_lfmUpsilonVector():
-    result = lfmUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmUpsilonVector(gamma, sigma2, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_upsilonvector').flatten())
 
 def test_lfmGradientUpsilonMatrix():
-    result = lfmGradientUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmGradientUpsilonMatrix(gamma, sigma2, X, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientupsilonmatrix'))
 
 def test_lfmGradientUpsilonVector():
-    result = lfmGradientUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmGradientUpsilonVector(gamma, sigma2, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientupsilonvector').flatten())
 
 def test_lfmGradientSigmaUpsilonMatrix():
-    result = lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, t1, t2)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientSigmaUpsilonMatrix.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmGradientSigmaUpsilonMatrix(gamma, sigma2, X, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientsigmaupsilonmatrix'))
 
 def test_lfmGradientSigmaUpsilonVector():
-    result = lfmGradientSigmaUpsilonVector(gamma1_p, sigma2, t1)
-    baseline = np.load('GPy/testing/baseline/result_lfmGradientSigmaUpsilonVector.npz')['arr_0']
-    np.testing.assert_array_almost_equal(result, baseline)
+    result = lfmGradientSigmaUpsilonVector(gamma, sigma2, X)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientsigmaupsilonvector').flatten())
 
 # ToDo:
 
