@@ -38,3 +38,13 @@ def test_lfmGradientSigmaUpsilonVector():
     baseline = np.load('GPy/testing/baseline/result_lfmGradientSigmaUpsilonVector.npz')['arr_0']
     np.testing.assert_array_almost_equal(result, baseline)
 
+# ToDo:
+
+# lfmComputeH3
+# lfmComputeH4
+# lfmGradientH31
+# lfmGradientH32
+# lfmGradientH41
+# lfmGradientH42
+# lfmGradientSigmaH3
+# lfmGradientSigmaH4
