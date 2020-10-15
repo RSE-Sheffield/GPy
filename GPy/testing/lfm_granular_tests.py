@@ -6,10 +6,12 @@ import scipy.io as sio
 
 # load values from matlab (gpmat)
 baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
-X = baseline.get('X')
+X = baseline.get('X').flatten()
 gamma = baseline.get('gamma')
 sigma2 = baseline.get('sigma2')
 preconst = baseline.get('preconst').flatten()
+pregamma = baseline.get('pregamma').flatten()
+preexp = baseline.get('preexp')
 
 def test_lfmUpsilonMatrix():
     result = lfmUpsilonMatrix(gamma, sigma2, X, X)
@@ -39,9 +41,12 @@ def test_lfmComputeH3():
     result = lfmComputeH3(gamma, gamma, sigma2, X, X, preconst[1] - preconst[0])[0]
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH3'))
 
+def test_lfmComputeH4():
+    result = lfmComputeH4(gamma, gamma, sigma2, X, pregamma, preexp, mode = False, term = True)[0]
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH4'))
+
 # ToDo:
 
-# lfmComputeH4
 # lfmGradientH31
 # lfmGradientH32
 # lfmGradientH41
