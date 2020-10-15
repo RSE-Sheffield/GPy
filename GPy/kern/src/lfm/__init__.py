@@ -179,7 +179,6 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
             + (compUpsilon2 * gradThetaGamma[1]) * (- preExp[:, 1]/preFactorGrad[3] + preExp[:, 0]/preFactorGrad[2]).T
     return g
 
-
 def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     compUpsilon1, compUpsilon2, mode, term=None):
     # LFMGRADIENTH42 Gradient of the function h_i(z) with respect to some of the
@@ -214,7 +213,6 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
             - compUpsilon2*((preExp[:, 1]/preFactorGrad[3] + preExpt[:, 1]/preFactor[3])*gradThetaGamma[1]
             - (preExp[:, 0]/preFactorGrad[1] + preExpt[:, 0]/preFactor[1])*gradThetaGamma[0]).T
     return g
-
 
 def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None):
 
