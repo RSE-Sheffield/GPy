@@ -20,7 +20,7 @@ class LFMXLFM(Kern):
         # Parameters go in as vectors of length 2, one parameter per kernel in the cross
 
         if scale is None:
-            scale =  np.ones(1) # np.random.rand(self.output_dim)
+            scale =  np.ones(1) * 2 # np.random.rand(self.output_dim)
         self.scale = Param('scale', scale)
 
         if mass is None:
@@ -42,7 +42,7 @@ class LFMXLFM(Kern):
         self.link_parameters(self.scale, self.mass, self.spring, self.damper, self.sensitivity)
 
         if isNormalised is None:
-            isNormalised = [True for _ in range(2)]
+            isNormalised = [False for _ in range(2)]
         self.isNormalised = isNormalised
 
         self.recalculate_intermediate_variables()
@@ -88,16 +88,16 @@ class LFMXLFM(Kern):
             preExp2 = np.exp(-gamma2 * X2)
             # Actual computation  of the kernel
             sK = np.real(
-                        lfmComputeH3(gamma1, gamma2, self.sigma, X, X2, preConsX, 0, 1)[0]
-                        + lfmComputeH3(gamma2, gamma1, self.sigma, X2, X, preConsX[1] - preConsX[0], 0, 0)[0].T
-                        + lfmComputeH4(gamma1, gamma2, self.sigma, X, preGamma, preExp2, 0, 1)[0]
-                        + lfmComputeH4(gamma2, gamma1, self.sigma, X2, preGamma, preExp1, 0, 0)[0].T
+                        lfmComputeH3(gamma1, gamma2, self.sigma2, X, X2, preConsX, 0, 1)[0]
+                        + lfmComputeH3(gamma2, gamma1, self.sigma2, X2, X, preConsX[1] - preConsX[0], 0, 0)[0].T
+                        + lfmComputeH4(gamma1, gamma2, self.sigma2, X, preGamma, preExp2, 0, 1)[0]
+                        + lfmComputeH4(gamma2, gamma1, self.sigma2, X2, preGamma, preExp1, 0, 0)[0].T
                         )
-            if self.isNormalised:
+            if self.isNormalised[0]:
                 K0 = (self.sensitivity[0] * self.sensitivity[1]) / (
                         4 * np.sqrt(2) * self.mass[0] * self.mass[1] * self.omega[0] * self.omega[1])
             else:
-                K0 = (np.sqrt(self.sigma) * np.sqrt(np.pi) * self.sensitivity[0] * self.sensitivity[1]) / (
+                K0 = (self.sigma * np.sqrt(np.pi) * self.sensitivity[0] * self.sensitivity[1]) / (
                         4 * self.mass[0] * self.mass[1] * self.omega[0] * self.omega[1])
 
             K = K0 * sK
@@ -126,10 +126,10 @@ class LFMXLFM(Kern):
             preExp2[:, 1] = np.exp(-gamma2_m * X2).ravel()
             # Actual  computation of the kernel
             sK = (
-                    lfmComputeH3(gamma1_p, gamma1_m, self.sigma, X, X2, preFactors[np.array([0, 1])], 1)[0]
-                    + lfmComputeH3(gamma2_p, gamma2_m, self.sigma, X2, X, preFactors[np.array([2, 3])], 1)[0].T
-                    + lfmComputeH4(gamma1_p, gamma1_m, self.sigma, X, preGamma[np.array([0, 1, 3, 2])], preExp2, 1)[0]
-                    + lfmComputeH4(gamma2_p, gamma2_m, self.sigma, X2, preGamma[np.array([0, 2, 3, 1])], preExp1, 1)[0].T
+                    lfmComputeH3(gamma1_p, gamma1_m, self.sigma2, X, X2, preFactors[np.array([0, 1])], 1)[0]
+                    + lfmComputeH3(gamma2_p, gamma2_m, self.sigma2, X2, X, preFactors[np.array([2, 3])], 1)[0].T
+                    + lfmComputeH4(gamma1_p, gamma1_m, self.sigma2, X, preGamma[np.array([0, 1, 3, 2])], preExp2, 1)[0]
+                    + lfmComputeH4(gamma2_p, gamma2_m, self.sigma2, X2, preGamma[np.array([0, 2, 3, 1])], preExp1, 1)[0].T
                 )
             if self.isNormalised:
                 K0 = (self.sensitivity[0] * self.sensitivity[1]) / (
