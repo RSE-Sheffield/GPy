@@ -80,10 +80,6 @@ class LFMXLFM(Kern):
             # Pre-computations to increase speed
             gamma1 = self.alpha[0] + 1j * self.omega[0]
             gamma2 = self.alpha[1] + 1j * self.omega[1]
-            # print('gamma1')
-            # print(gamma1)
-            # print('gamma2')
-            # print(gamma2)
             preGamma = np.array([gamma1 + gamma2,
                                  np.conj(gamma1) + gamma2
                                 ])
