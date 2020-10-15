@@ -4,11 +4,11 @@ import sys
 import unittest
 import scipy.io as sio
 
-gamma = 0.5 + 0.5j
-sigma2 = 0.5
-
+# load values from matlab (gpmat)
 baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
 X = baseline.get('X')
+gamma = baseline.get('gamma')
+sigma2 = baseline.get('sigma2')
 
 def test_lfmUpsilonMatrix():
     result = lfmUpsilonMatrix(gamma, sigma2, X, X)
