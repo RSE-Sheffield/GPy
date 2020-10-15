@@ -9,6 +9,7 @@ baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
 X = baseline.get('X')
 gamma = baseline.get('gamma')
 sigma2 = baseline.get('sigma2')
+preconst = baseline.get('preconst').flatten()
 
 def test_lfmUpsilonMatrix():
     result = lfmUpsilonMatrix(gamma, sigma2, X, X)
@@ -34,9 +35,12 @@ def test_lfmGradientSigmaUpsilonVector():
     result = lfmGradientSigmaUpsilonVector(gamma, sigma2, X)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientsigmaupsilonvector').flatten())
 
+def test_lfmComputeH3():
+    result = lfmComputeH3(gamma, gamma, sigma2, X, X, preconst[1] - preconst[0])[0]
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH3'))
+
 # ToDo:
 
-# lfmComputeH3
 # lfmComputeH4
 # lfmGradientH31
 # lfmGradientH32
