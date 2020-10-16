@@ -39,13 +39,9 @@ def test_lfmGradientSigmaUpsilonVector():
     result = lfmGradientSigmaUpsilonVector(gamma, sigma2, X)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientsigmaupsilonvector').flatten())
 
-def test_lfmComputeH3_1():
+def test_lfmComputeH3():
     result = lfmComputeH3(gamma, gamma, sigma2, X, X, preconst, mode = False, term = True)[0]
-    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH3_1'))
-
-def test_lfmComputeH3_2():
-    result = lfmComputeH3(gamma, gamma, sigma2, X, X, preconst[1] - preconst[0])[0]
-    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH3_2'))
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH3'))
 
 def test_lfmComputeH4():
     result = lfmComputeH4(gamma, gamma, sigma2, X, pregamma, preexp, mode = False, term = True)[0]
