@@ -98,5 +98,12 @@ def test_covariance():
     result = k.K(np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(result, cov)
 
+# Check matlab and python produce the same gradients
 
+def test_gradient():
+    grad1 = baseline.get('grad1')
+    grad2 = baseline.get('grad2')
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    result=[k.mass.gradient]
+    # ToDo figure out equivalence and add assertion
 
