@@ -14,6 +14,25 @@ preconst = baseline.get('preconst').flatten()
 pregamma = baseline.get('pregamma').flatten()
 preexp = baseline.get('preexp')
 cov = baseline.get('cov')
+covGrad = baseline.get('covGrad')
+
+# Values copied from matlab defaults
+
+inversewidth = 1
+mass = 1
+spring = 1
+damper = 1
+sensitivity = 1
+alpha = 0.5
+omega = 0.866025403784439
+gamma = 0.5 + 0.866025403784439j
+variance = 1
+inversewidth = 1
+sigma2 = 2 / inversewidth
+
+# Make a kernel
+
+k = GPy.kern.LFMXLFM(input_dim = 1)
 
 def test_lfmUpsilonMatrix():
     result = lfmUpsilonMatrix(gamma, sigma2, X, X)
@@ -57,22 +76,6 @@ def test_lfmComputeH4():
 # lfmGradientSigmaH4
 
 def test_covariance():
-
-    # Values copied from matlab
-    inversewidth = 1
-    mass = 1
-    spring = 1
-    damper = 1
-    sensitivity = 1
-    alpha = 0.5
-    omega = 0.866025403784439
-    gamma = 0.5 + 0.866025403784439j
-    variance = 1
-    inversewidth = 1
-    sigma2 = 2 / inversewidth
-
-    # Make a kernel
-    k = GPy.kern.LFMXLFM(input_dim = 1)
 
     # Check parameters are the same as matlab
     #assert(inversewidth == k.scale[0])
