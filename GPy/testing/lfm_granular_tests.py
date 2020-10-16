@@ -34,6 +34,23 @@ sigma2 = 2 / inversewidth
 
 k = GPy.kern.LFMXLFM(input_dim = 1)
 
+# Check parameters are the same as matlab
+
+def test_parameters():
+    
+    #assert(inversewidth == k.scale[0])
+    np.testing.assert_array_almost_equal(np.array([mass,mass]), k.mass)
+    np.testing.assert_array_almost_equal(np.array([spring,spring]), k.spring)
+    np.testing.assert_array_almost_equal(np.array([damper,damper]), k.damper)
+    np.testing.assert_array_almost_equal(np.array([sensitivity,sensitivity]), k.sensitivity)
+
+    np.testing.assert_array_almost_equal(np.array([alpha,alpha]), k.alpha)
+    np.testing.assert_array_almost_equal(np.array([omega,omega]), k.omega)
+    np.testing.assert_array_almost_equal(np.array([gamma,gamma]), k.gamma)
+    np.testing.assert_array_almost_equal(np.array([sigma2,sigma2]), k.sigma2)
+
+# Test helper functions
+
 def test_lfmUpsilonMatrix():
     result = lfmUpsilonMatrix(gamma, sigma2, X, X)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_upsilonmatrix'))
@@ -75,19 +92,11 @@ def test_lfmComputeH4():
 # lfmGradientSigmaH3
 # lfmGradientSigmaH4
 
+# Check matlab and python produce the same covariance matrix
+
 def test_covariance():
+    result = k.K(np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(result, cov)
 
-    # Check parameters are the same as matlab
-    #assert(inversewidth == k.scale[0])
-    np.testing.assert_array_almost_equal(np.array([mass,mass]), k.mass)
-    np.testing.assert_array_almost_equal(np.array([spring,spring]), k.spring)
-    np.testing.assert_array_almost_equal(np.array([damper,damper]), k.damper)
-    np.testing.assert_array_almost_equal(np.array([sensitivity,sensitivity]), k.sensitivity)
 
-    np.testing.assert_array_almost_equal(np.array([alpha,alpha]), k.alpha)
-    np.testing.assert_array_almost_equal(np.array([omega,omega]), k.omega)
-    np.testing.assert_array_almost_equal(np.array([gamma,gamma]), k.gamma)
-    np.testing.assert_array_almost_equal(np.array([sigma2,sigma2]), k.sigma2)
-        
-    # Check matlab and python produce the same covariance matrix
-    np.testing.assert_array_almost_equal(k.K(np.atleast_2d(X).transpose()), cov)
+
