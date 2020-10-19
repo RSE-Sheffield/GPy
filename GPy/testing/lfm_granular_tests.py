@@ -99,11 +99,19 @@ def test_lfmGradientH31():
                             1,
                             mode = False,
                             term = True)
-    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH31'))                  
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH31'))                  
+
+def test_lfmGradientH32():
+    result = lfmGradientH32(pregamma2,
+                            gradthetagamma1,
+                            baseline.get('baseline_upsilonmatrix'),
+                            1,
+                            mode = False,
+                            term = False)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH32'))  
 
 # ToDo:
 
-# lfmGradientH32
 # lfmGradientH41
 # lfmGradientH42
 # lfmGradientSigmaH3
