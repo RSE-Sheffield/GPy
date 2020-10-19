@@ -6,15 +6,21 @@ import unittest
 import scipy.io as sio
 
 # load values from matlab (gpmat)
+
 baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
+
 X = baseline.get('X').flatten()
 gamma = baseline.get('gamma')
 sigma2 = baseline.get('sigma2')
 preconst = baseline.get('preconst').flatten()
+preconst2 = baseline.get('preconst2').flatten()
 pregamma = baseline.get('pregamma').flatten()
+pregamma2 = baseline.get('pregamma2').flatten()
 preexp = baseline.get('preexp')
 cov = baseline.get('cov')
 covGrad = baseline.get('covGrad')
+
+gradthetagamma1 = baseline.get('gradthetagamma1').flatten()
 
 # Values copied from matlab defaults
 
@@ -83,9 +89,20 @@ def test_lfmComputeH4():
     result = lfmComputeH4(gamma, gamma, sigma2, X, pregamma, preexp, mode = False, term = True)[0]
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH4'))
 
+def test_lfmGradientH31():
+    result = lfmGradientH31(preconst,
+                            preconst2,
+                            gradthetagamma1,
+                            baseline.get('baseline_gradientupsilonmatrix'),
+                            1,
+                            baseline.get('baseline_upsilonmatrix'),
+                            1,
+                            mode = False,
+                            term = True)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_computeH31'))                  
+
 # ToDo:
 
-# lfmGradientH31
 # lfmGradientH32
 # lfmGradientH41
 # lfmGradientH42
@@ -104,6 +121,7 @@ def test_gradient():
     grad1 = baseline.get('grad1')
     grad2 = baseline.get('grad2')
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    result=[k.mass.gradient]
-    # ToDo figure out equivalence and add assertion
+    # ToDo figure out equivalence (below is a placeholder)
+    result=[k.mass.gradient]    
+    np.testing.assert_array_almost_equal(result,covGrad)
 
