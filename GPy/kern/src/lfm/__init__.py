@@ -203,16 +203,16 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     if not mode:
         if not term:
             g = compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma[0]
-                + (np.conj(preExp)/preFactorGrad[1] + np.conj(preExpt)/preFactor[1])*gradThetaGamma[1]).T
+                + (np.conj(preExp)/preFactorGrad[1] + np.conj(preExpt)/preFactor[1])*gradThetaGamma[1])
         else:
-            g = compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma).T \
-                + np.conj(compUpsilon1)*((preExp/preFactorGrad[1] + preExpt/preFactor[1])*gradThetaGamma).T
+            g = compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma) \
+                + np.conj(compUpsilon1)*((preExp/preFactorGrad[1] + preExpt/preFactor[1])*gradThetaGamma)
     else:
         g = compUpsilon1*((preExp[:, 1]/preFactorGrad[2] + preExpt[:, 1]/preFactor[2])*gradThetaGamma[1]
-            - (preExp[:, 0]/preFactorGrad[0] + preExpt[:, 0]/preFactor[0])*gradThetaGamma[0]).T \
+            - (preExp[:, 0]/preFactorGrad[0] + preExpt[:, 0]/preFactor[0])*gradThetaGamma[0]) \
             - compUpsilon2*((preExp[:, 1]/preFactorGrad[3] + preExpt[:, 1]/preFactor[3])*gradThetaGamma[1]
-            - (preExp[:, 0]/preFactorGrad[1] + preExpt[:, 0]/preFactor[1])*gradThetaGamma[0]).T
-    return g
+            - (preExp[:, 0]/preFactorGrad[1] + preExpt[:, 0]/preFactor[1])*gradThetaGamma[0])
+    return g.T
 
 def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None):
 

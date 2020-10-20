@@ -17,6 +17,7 @@ preconst2 = baseline.get('preconst2').flatten()
 pregamma = baseline.get('pregamma').flatten()
 pregamma2 = baseline.get('pregamma2').flatten()
 preexp = baseline.get('preexp')
+preexpt = baseline.get('preexpt')
 cov = baseline.get('cov')
 covGrad = baseline.get('covGrad')
 
@@ -123,9 +124,20 @@ def test_lfmGradientH41():
                             term = True)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH41')) 
 
+def test_lfmGradientH42():
+    result = lfmGradientH42(pregamma,
+                            pregamma2,
+                            gradthetagamma1,
+                            preexp,
+                            preexpt,
+                            baseline.get('baseline_upsilonvector').flatten(),
+                            1,
+                            mode = False,
+                            term = False)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH42')) 
+
 # ToDo:
 
-# lfmGradientH42
 # lfmGradientSigmaH3
 # lfmGradientSigmaH4
 
