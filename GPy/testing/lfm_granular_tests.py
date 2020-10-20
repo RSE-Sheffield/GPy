@@ -136,9 +136,19 @@ def test_lfmGradientH42():
                             term = False)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH42')) 
 
+def test_lfmGradientSigmaH3():
+    result = lfmGradientSigmaH3(gamma,
+                                gamma,
+                                sigma2,
+                                X,
+                                X,
+                                preconst,
+                                mode = False,
+                                term = True)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientSigmaH3')) 
+
 # ToDo:
 
-# lfmGradientSigmaH3
 # lfmGradientSigmaH4
 
 # Check matlab and python produce the same covariance matrix
