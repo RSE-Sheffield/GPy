@@ -22,6 +22,7 @@ cov = baseline.get('cov')
 covGrad = baseline.get('covGrad')
 
 gradthetagamma1 = baseline.get('gradthetagamma1').flatten()
+gradthetagamma2 = baseline.get('gradthetagamma2')
 
 # Values copied from matlab defaults
 
@@ -93,47 +94,47 @@ def test_lfmComputeH4():
 def test_lfmGradientH31():
     result = lfmGradientH31(preconst,
                             preconst2,
-                            gradthetagamma1,
+                            gradthetagamma2,
                             baseline.get('baseline_gradientupsilonmatrix'),
                             1,
                             baseline.get('baseline_upsilonmatrix'),
                             1,
                             mode = False,
-                            term = True)
+                            term = False)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH31'))                  
 
 def test_lfmGradientH32():
     result = lfmGradientH32(pregamma2,
-                            gradthetagamma1,
+                            gradthetagamma2,
                             baseline.get('baseline_upsilonmatrix'),
                             1,
                             mode = False,
-                            term = False)
+                            term = True)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH32'))  
 
 def test_lfmGradientH41():
     result  = lfmGradientH41(pregamma,
                             pregamma2,
-                            gradthetagamma1,
+                            gradthetagamma2,
                             preexp,
                             baseline.get('baseline_gradientupsilonvector').flatten(),
                             1,
                             baseline.get('baseline_upsilonvector').flatten(),
                             1,
                             mode = False,
-                            term = True)
+                            term = False)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH41')) 
 
 def test_lfmGradientH42():
     result = lfmGradientH42(pregamma,
                             pregamma2,
-                            gradthetagamma1,
+                            gradthetagamma2,
                             preexp,
                             preexpt,
                             baseline.get('baseline_upsilonvector').flatten(),
                             1,
                             mode = False,
-                            term = False)
+                            term = True)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH42')) 
 
 def test_lfmGradientSigmaH3():

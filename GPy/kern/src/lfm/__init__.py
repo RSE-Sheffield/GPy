@@ -104,7 +104,7 @@ def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradU
     # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
     if not mode:
         if not term:
-            g = (preFactor*gradUpsilon1 + preFactorGrad*compUpsilon1)*gradThetaGamma
+            g = (preFactor[0]*gradUpsilon1 + preFactorGrad[0]*compUpsilon1)*gradThetaGamma
         else:
             g = (-preFactor[0]*gradUpsilon1 + preFactorGrad[0]*compUpsilon1)*gradThetaGamma[0] \
                 +(preFactor[1]*np.conj(gradUpsilon1) - preFactorGrad[1]*np.conj(compUpsilon1))*gradThetaGamma[1]
