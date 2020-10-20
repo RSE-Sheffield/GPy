@@ -110,9 +110,21 @@ def test_lfmGradientH32():
                             term = False)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH32'))  
 
+def test_lfmGradientH41():
+    result  = lfmGradientH41(pregamma,
+                            pregamma2,
+                            gradthetagamma1,
+                            preexp,
+                            baseline.get('baseline_gradientupsilonvector').flatten(),
+                            1,
+                            baseline.get('baseline_upsilonvector').flatten(),
+                            1,
+                            mode = False,
+                            term = True)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientH41')) 
+
 # ToDo:
 
-# lfmGradientH41
 # lfmGradientH42
 # lfmGradientSigmaH3
 # lfmGradientSigmaH4
