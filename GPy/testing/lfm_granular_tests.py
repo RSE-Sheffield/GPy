@@ -171,10 +171,13 @@ def test_covariance():
 # Check matlab and python produce the same gradients
 
 def test_gradient():
-    grad1 = baseline.get('grad1')
-    grad2 = baseline.get('grad2')
+    grad1 = baseline.get('grad1').flatten()
+    grad2 = baseline.get('grad2').flatten()
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    # ToDo figure out equivalence (below is a placeholder)
-    result=[k.mass.gradient]    
-    np.testing.assert_array_almost_equal(result,covGrad)
+    # ToDo figure out equivalence (below is a placeholder)   
+    np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
+    np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
+    np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
+    np.testing.assert_array_almost_equal(k.scale.gradient, 2/grad1[3])
+    np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
 

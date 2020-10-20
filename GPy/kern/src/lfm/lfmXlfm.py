@@ -488,7 +488,16 @@ class LFMXLFM(Kern):
         # names = {'mass', 'spring', 'damper', 'inverse width', 'sensitivity'}
         # scale = 2/inverse width
 
-        return [g1, g2]
+        self.scale.gradient = 2/g1[3]
+        self.mass.gradient[0] = g1[0]
+        self.spring.gradient[0] = g1[1]
+        self.damper.gradient[0] = g1[2]
+        self.sensitivity.gradient[0] = g1[4]
+        #self.scale.gradient[1] = 2/g2[3]
+        self.mass.gradient[1] = g2[0]
+        self.spring.gradient[1] = g2[1]
+        self.damper.gradient[1] = g2[2]
+        self.sensitivity.gradient[1] = g2[4]
     
     def reset_gradients(self):
         self.scale.gradient = np.zeros_like(self.scale.gradient)
