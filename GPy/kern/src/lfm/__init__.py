@@ -263,7 +263,7 @@ def lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preFactor, preExp, mode, term)
             g = lfmGradientSigmaUpsilonVector(gamma1, sigma2, X)*(preExp/preFactor[0] - np.conj(preExp)/preFactor[1]).T
         else:
             gradupsilon = lfmGradientSigmaUpsilonVector(gamma1, sigma2, X)
-            g = gradupsilon * (preExp/preFactor[0]).T - np.conj(gradupsilon)*(preExp/preFactor[1]).T
+            g = (gradupsilon * (preExp/preFactor[0])).T - (np.conj(gradupsilon)*(preExp/preFactor[1])).T
     else:
         g = lfmGradientSigmaUpsilonVector(gamma1, sigma2, X)*(preExp[:, 0]/preFactor[0] - preExp[:, 1]/preFactor[1]).T \
             + lfmGradientSigmaUpsilonVector(gamma2, sigma2, X)*(preExp[:, 1]/preFactor[2] - preExp[:, 0]/preFactor[3]).T

@@ -147,9 +147,20 @@ def test_lfmGradientSigmaH3():
                                 term = True)
     np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientSigmaH3')) 
 
+def test_lfmGradientSigmaH4():
+    result = lfmGradientSigmaH4(gamma,
+                                gamma,
+                                sigma2,
+                                X,
+                                pregamma,
+                                preexp,
+                                mode = False,
+                                term = True)
+    np.testing.assert_array_almost_equal(result, baseline.get('baseline_gradientSigmaH4')) 
+
 # ToDo:
 
-# lfmGradientSigmaH4
+# Digonal helpers, cover more of branching logic
 
 # Check matlab and python produce the same covariance matrix
 
