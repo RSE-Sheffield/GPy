@@ -102,6 +102,11 @@ def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradU
     #
     # Author : Tianqi Wei
     # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+
+    #this has come from matlab where eberything is an array, so let's make everything an array for now
+    preFactor = np.atleast_1d(preFactor)
+    preFactorGrad = np.atleast_1d(preFactorGrad)
+
     if not mode:
         if not term:
             g = (preFactor[0]*gradUpsilon1 + preFactorGrad[0]*compUpsilon1)*gradThetaGamma
@@ -260,7 +265,7 @@ def lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preFactor, preExp, mode, term)
     # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
     if not mode:
         if not term:
-            g = lfmGradientSigmaUpsilonVector(gamma1, sigma2, X)*(preExp/preFactor[0] - np.conj(preExp)/preFactor[1]).T
+            g = np.outer(lfmGradientSigmaUpsilonVector(gamma1, sigma2, X),(preExp/preFactor[0] - np.conj(preExp)/preFactor[1]).T)
         else:
             gradupsilon = lfmGradientSigmaUpsilonVector(gamma1, sigma2, X)
             g = (gradupsilon * (preExp/preFactor[0])).T - (np.conj(gradupsilon)*(preExp/preFactor[1])).T
