@@ -207,8 +207,8 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
 
     if not mode:
         if not term:
-            g = compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma[0]
-                + (np.conj(preExp)/preFactorGrad[1] + np.conj(preExpt)/preFactor[1])*gradThetaGamma[1])
+            g = (compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma[0]
+                + (np.conj(preExp)/preFactorGrad[1] + np.conj(preExpt)/preFactor[1])*gradThetaGamma[1]).T).T
         else:
             g = compUpsilon1*(- (preExp/preFactorGrad[0] + preExpt/preFactor[0])*gradThetaGamma) \
                 + np.conj(compUpsilon1)*((preExp/preFactorGrad[1] + preExpt/preFactor[1])*gradThetaGamma)
