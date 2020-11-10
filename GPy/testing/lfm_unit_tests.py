@@ -45,10 +45,6 @@ sigma2 = 2 / inversewidth
 
 k = GPy.kern.LFMXLFM(input_dim = 1)
 
-# Calculate gradients
-
-k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-
 # Check parameters are the same as matlab
 
 def test_parameters():
@@ -179,17 +175,22 @@ def test_covariance():
 # Check matlab and python produce the same gradients
 
 def test_gradient_mass():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
 
 def test_gradient_spring():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
 
 def test_gradient_damper():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
 
 def test_gradient_scale():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.scale.gradient, 2/grad1[3])
 
 def test_gradient_sensitivity():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
 
