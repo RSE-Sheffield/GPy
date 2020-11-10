@@ -174,23 +174,42 @@ def test_covariance():
 
 # Check matlab and python produce the same gradients
 
-def test_gradient_mass():  
+def test_gradient_mass_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
 
-def test_gradient_spring():  
+def test_gradient_spring_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
 
-def test_gradient_damper():  
+def test_gradient_damper_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
 
-def test_gradient_scale():  
+def test_gradient_scale_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.scale.gradient, 2/grad1[3])
 
-def test_gradient_sensitivity():  
+def test_gradient_sensitivity_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
 
+def test_gradient_mass_2():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
+
+def test_gradient_spring_2():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
+
+def test_gradient_damper_2():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
+
+def test_gradient_scale_2():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(k.scale.gradient, 2/grad1[3])
+
+def test_gradient_sensitivity_2():  
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
