@@ -173,12 +173,12 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
             g = (gradUpsilon1 * gradThetaGamma) * (preExp/preFactor[0] - np.conj(preExp)/preFactor[1]) \
                 + (compUpsilon1 * gradThetaGamma) * (- preExp/preFactorGrad[0] + np.conj(preExp)/preFactorGrad[1])
         else:
-            g = (gradUpsilon1 * gradThetaGamma[0]) * (preExp/preFactor[0]) \
-                + (compUpsilon1 * gradThetaGamma[0]) * (- preExp/preFactorGrad[0]) \
-                + (np.conj(gradUpsilon1) * gradThetaGamma[1]) * (- preExp/preFactor[1]) \
-                + (np.conj(compUpsilon1) * gradThetaGamma[1]) * (preExp/preFactorGrad[1])
+            g = (((gradUpsilon1 * gradThetaGamma[0]) * (preExp/preFactor[0])).T \
+                + np.outer((compUpsilon1 * gradThetaGamma[0]), (- preExp/preFactorGrad[0]).T) \
+                + ((np.conj(gradUpsilon1) * gradThetaGamma[1]) * (- preExp/preFactor[1])).T \
+                + np.outer((np.conj(compUpsilon1) * gradThetaGamma[1]), (preExp/preFactorGrad[1]).T)).T
     else:
-        g = (gradUpsilon1 * gradThetaGamma[0]) *                                                                                  (preExp[:, 0]/preFactor[0] - preExp[:, 1]/preFactor[1]) \
+        g = (gradUpsilon1 * gradThetaGamma[0]) * (preExp[:, 0]/preFactor[0] - preExp[:, 1]/preFactor[1]) \
             + (compUpsilon1 * gradThetaGamma[0]) * (- preExp[:, 0]/preFactorGrad[0] + preExp[:, 1]/preFactorGrad[1]) \
             + (gradUpsilon2 * gradThetaGamma[1]) * (preExp[:, 1]/preFactor[3] - preExp[:, 0]/preFactor[2]) \
             + (compUpsilon2 * gradThetaGamma[1]) * (- preExp[:, 1]/preFactorGrad[3] + preExp[:, 0]/preFactorGrad[2])
