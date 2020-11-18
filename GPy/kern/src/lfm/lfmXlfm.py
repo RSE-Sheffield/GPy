@@ -478,8 +478,8 @@ class LFMXLFM(Kern):
             else:
                     matGrad = (meanVector * matGrad).T
         # TODO
-        g1[4:] = sum(sum(S[1] * matGrad * covGrad))
-        g2[4:] = sum(sum(S[0] * matGrad * covGrad))
+        g1[4] = sum(sum(S[1] * matGrad * covGrad))
+        g2[4] = sum(sum(S[0] * matGrad * covGrad))
 
         g2[3] = 0  # Otherwise is counted twice
 
