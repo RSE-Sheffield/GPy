@@ -10,6 +10,7 @@ import numpy as np
 import random
 from ..util.config import config
 
+import scipy.io as sio
 
 verbose = 1
 
@@ -539,8 +540,10 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     #3 convolved "sub-kernels" for latent force models
     def test_lfmXlfm(self):
         k = GPy.kern.LFMXLFM(input_dim = 1)
-        X = np.random.randn(10, k.input_dim)
-        X2 = np.random.randn(10, k.input_dim)
+        # load baseline values from matlab (gpmat)
+        baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
+        X = np.atleast_2d(baseline.get('X').flatten()).T
+        X2 = X
         self.assertTrue(check_kernel_gradient_functions(k, X = X, X2 = X2, verbose = verbose))
     
     def test_lfmXrbf(self):
