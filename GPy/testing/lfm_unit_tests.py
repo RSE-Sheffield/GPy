@@ -196,16 +196,16 @@ def test_gradient_sensitivity_1():
 
 def test_gradient_mass_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
+    np.testing.assert_array_almost_equal(k.mass.gradient[1], grad2[0])
 
 def test_gradient_spring_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
+    np.testing.assert_array_almost_equal(k.spring.gradient[1], grad2[1])
 
 def test_gradient_damper_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
+    np.testing.assert_array_almost_equal(k.damper.gradient[1], grad2[2])
 
 def test_gradient_sensitivity_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
+    np.testing.assert_array_almost_equal(k.sensitivity.gradient[1], grad2[4])
