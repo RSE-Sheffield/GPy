@@ -188,7 +188,7 @@ def test_gradient_damper_1():
 
 def test_gradient_scale():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.scale.gradient, 2/grad1[3])
+    np.testing.assert_array_almost_equal(k.scale.gradient, grad1[3])
 
 def test_gradient_sensitivity_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())

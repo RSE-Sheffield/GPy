@@ -492,7 +492,7 @@ class LFMXLFM(Kern):
         self.mass.gradient[0] = g1[0]
         self.spring.gradient[0] = g1[1]
         self.damper.gradient[0] = g1[2]
-        self.scale.gradient = 2/g1[3]
+        self.scale.gradient = g1[3]
         self.sensitivity.gradient[0] = g1[4]
         
         # kernel 2
