@@ -18,14 +18,14 @@ pregamma = baseline.get('pregamma').flatten()
 pregamma2 = baseline.get('pregamma2').flatten()
 preexp = baseline.get('preexp')
 preexpt = baseline.get('preexpt')
-cov = baseline.get('cov')
+cov_lfmXlfm = baseline.get('cov_lfmXlfm')
 covGrad = baseline.get('covGrad')
 
 gradthetagamma1 = baseline.get('gradthetagamma1').flatten()
 gradthetagamma2 = baseline.get('gradthetagamma2')
 
-grad1 = baseline.get('grad1').flatten()
-grad2 = baseline.get('grad2').flatten()
+grad1_lfmXlfm = baseline.get('grad1_lfmXlfm').flatten()
+grad2_lfmXlfm = baseline.get('grad2_lfmXlfm').flatten()
 
 # Values copied from matlab defaults
 
@@ -170,42 +170,42 @@ def test_lfmGradientSigmaH4():
 
 def test_covariance():
     result = k.K(np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(result, cov)
+    np.testing.assert_array_almost_equal(result, cov_lfmXlfm)
 
 # Check matlab and python produce the same gradients
 
 def test_gradient_mass_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1[0])
+    np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1_lfmXlfm[0])
 
 def test_gradient_spring_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1[1])
+    np.testing.assert_array_almost_equal(k.spring.gradient[0], grad1_lfmXlfm[1])
 
 def test_gradient_damper_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1[2])
+    np.testing.assert_array_almost_equal(k.damper.gradient[0], grad1_lfmXlfm[2])
 
 def test_gradient_scale():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.scale.gradient, grad1[3])
+    np.testing.assert_array_almost_equal(k.scale.gradient, grad1_lfmXlfm[3])
 
 def test_gradient_sensitivity_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1[4])
+    np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1_lfmXlfm[4])
 
 def test_gradient_mass_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.mass.gradient[1], grad2[0])
+    np.testing.assert_array_almost_equal(k.mass.gradient[1], grad2_lfmXlfm[0])
 
 def test_gradient_spring_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.spring.gradient[1], grad2[1])
+    np.testing.assert_array_almost_equal(k.spring.gradient[1], grad2_lfmXlfm[1])
 
 def test_gradient_damper_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.damper.gradient[1], grad2[2])
+    np.testing.assert_array_almost_equal(k.damper.gradient[1], grad2_lfmXlfm[2])
 
 def test_gradient_sensitivity_2():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
-    np.testing.assert_array_almost_equal(k.sensitivity.gradient[1], grad2[4])
+    np.testing.assert_array_almost_equal(k.sensitivity.gradient[1], grad2_lfmXlfm[4])
