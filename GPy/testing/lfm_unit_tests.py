@@ -58,7 +58,7 @@ def test_parameters():
     np.testing.assert_array_almost_equal(np.array([alpha,alpha]), k.alpha)
     np.testing.assert_array_almost_equal(np.array([omega,omega]), k.omega)
     np.testing.assert_array_almost_equal(np.array([gamma,gamma]), k.gamma)
-    np.testing.assert_array_almost_equal(np.array([sigma2,sigma2]), k.sigma2)
+    np.testing.assert_almost_equal(sigma2, k.scale)
 
 # Test helper functions
 
