@@ -71,8 +71,11 @@ class LFMXLFM(Kern):
         # super(LFM, self).parameters_changed()
 
     def K(self, X, X2=None):
+        
         if X2 is None:
             X2 = X
+
+        assert X1.shape[1] == 1 and X2.shape[1] == 1, 'Input of' + inspect.stack()[0][3]  + 'can only have one column'
 
         # Creation  of the time matrices
 
