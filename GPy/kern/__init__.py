@@ -75,6 +75,7 @@ from .src.diff_kern import DiffKern
 # Latent Force Models
 from .src import lfm
 from .src.lfm.lfmXlfm import LFMXLFM
+from .src.lfm.lfmxrbf import LFMXRBF
 # from .src.lfm.KFFLFM import KFFLFM # Skipping due to syntax error
 from .src.lfm import lfm_C
 
