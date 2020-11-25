@@ -1,10 +1,56 @@
-# This is currently completely broken, but aspires to be a representation of the
-# lfmXrbf convolved kernel for use in latent force models.
+from GPy.kern import Kern
+from GPy.kern.src.lfm import *
+import numpy as np
+from GPy.core.parameterization import Param
+from paramz.transformations import Logexp
+from GPy.kern.src.independent_outputs import index_to_slices
+
+from GPy.util.config import config # for assesing whether to use cython
 
 class LFMXRBF(Kern):
+    """
+    LFM X RBF convolved kernel todo: expand.
+    """
 
-    def __init__(self, input_dim, output_dim, name='lfmXrbf'):
-        pass
+    def __init__(self, input_dim, active_dims=None, name='lfmXrbf'):
+
+        super(LFMXRBF, self).__init__(input_dim, active_dims, name)
+
+        if scale is None:
+            scale =  2
+        self.scale = Param('scale', scale)
+
+        if mass is None:
+            mass =  1
+        self.mass = Param('mass', mass)
+
+        if spring is None:
+            spring =  1
+        self.spring = Param('spring', spring)
+
+        if damper is None:
+            damper = 1
+        self.damper = Param('damper', damper)
+
+        if sensitivity is None:
+            sensitivity = 1
+        self.sensitivity = Param('sensitivity', sensitivity)
+
+        self.link_parameters(self.scale, self.mass, self.spring, self.damper, self.sensitivity)
+
+        if isNormalised is None:
+            isNormalised = [False for _ in range(2)]
+        self.isNormalised = isNormalised
+
+        self.recalculate_intermediate_variables()
+
+    def recalculate_intermediate_variables(self):
+        # alpha and omega are intermediate variables used in the model and gradient for optimisation
+        self.alpha = self.damper / (2 * self.mass)
+        self.omega = np.sqrt(self.spring / self.mass - self.alpha * self.alpha)
+        self.omega_isreal = np.isreal(self.omega).all()
+
+        self.gamma = self.alpha + 1j * self.omega
 
     def K(self, X1, X2=None):
             # LFMXRBFKERNCOMPUTE Compute a cross kernel between the LFM and RBF kernels.
@@ -39,32 +85,20 @@ class LFMXRBF(Kern):
 
             if X2 is None:
                 X2 = X1
-            assert X1.shape[1] == 1 and X2.shape[1] == 1, 'Input of' + inspect.stack()[0][3]  +'can only have one column' # _update_gradients_LFMXRBF.__name__
-            assert self.unilateral_kernels[q1].inv_l == self.unilateral_kernels[q1].inv_l, \
-            'Kernels cannot be cross combined if they have different inverse widths.'
-
-            # Get length scale out.
-            sigma2 = self.unilateral_kernels[q1].sigma2
-            sigma = self.unilateral_kernels[q1].sigma
-
-            # Parameters of the kernel
-            alpha = self.unilateral_kernels[q1].alpha
-            omega = self.unilateral_kernels[q1].omega
+            assert X1.shape[1] == 1 and X2.shape[1] == 1, 'Input of' + inspect.stack()[0][3]  + 'can only have one column'
 
             # Kernel evaluation
-            if self.unilateral_kernels[q1].omega_isreal:
-                gamma = alpha + 1j * omega
-                sK = np.imag(lfmComputeUpsilonMatrix(gamma, sigma2, X1, X2))
-                K0 = csqrt(np.pi) * sigma * self.unilateral_kernels[q1].sensitivity \
-                    / (2 * self.unilateral_kernels[q1].mass * omega)
+            if self.omega_isreal:
+                gamma = self.alpha + 1j * self.omega
+                sK = np.imag(lfmComputeUpsilonMatrix(gamma, self.scale, X1, X2))
+                K0 = np.sqrt(np.pi) * np.sqrt(self.scale) * self.sensitivity / (2 * self.mass * self.omega)
                 K = -K0 * sK
 
             else:
-                gamma1 = alpha + 1j * omega
-                gamma2 = alpha - 1j * omega
-                sK = lfmComputeUpsilonMatrix(gamma2, sigma2, X1, X2) - lfmComputeUpsilonMatrix(gamma1, sigma2, X1, X2)
-                K0 = csqrt(np.pi) * sigma * self.unilateral_kernels[q1].sensitivity \
-                    / (1j * 4 * self.unilateral_kernels[q1].mass * omega)
+                gamma1 = self.alpha + 1j * self.omega
+                gamma2 = self.alpha - 1j * self.omega
+                sK = lfmComputeUpsilonMatrix(gamma2, self.scale, X1, X2) - lfmComputeUpsilonMatrix(gamma1, self.scale, X1, X2)
+                K0 = np.sqrt(np.pi) * np.sqrt(self.scale) * self.sensitivity / (1j * 4 * self.mass * self.omega)
                 K = K0 * sK
             return K
 
@@ -127,19 +161,15 @@ class LFMXRBF(Kern):
 
         # KERN
 
-        subComponent = False  # This is just a flag that indicates if this kernel is part of a bigger kernel (SDLFM)
-
         if dL_dK is None:
             # this section of codes are historical legacy from the Matlab codes. I don't think it actually functioning
             # here. --Tianqi
             dL_dK  = X2
             X2 = X1
         if meanVector is not None:
-            subComponent = True
             if np.prod(meanVector.shape) > 1:
                 if meanVector.shape[0] == 1:
                     assert meanVector.shape[1] == dL_dK.shape[1], 'The dimensions of meanVector don''t correspond to the dimensions of dL_dK.'
-
                 else:
                     assert meanVector.shape[1] == dL_dK.shape[1], 'The dimensions of meanVector don''t correspond to the dimensions of dL_dK'
             else:
@@ -153,36 +183,27 @@ class LFMXRBF(Kern):
                     dL_dK = dL_dK.reshape([dimdL_dK, 1])
 
         assert X1.shape[1] == 1 and X2.shape[1] == 1, 'Input can only have one column'
-        assert self.unilateral_kernels[q1].inv_l == self.unilateral_kernels[q2].inv_l, \
-                'Kernels cannot be cross combined if they have different inverse widths.'
     
-        m = self.unilateral_kernels[q1].mass
-        D = self.unilateral_kernels[q1].spring
-        C = self.unilateral_kernels[q1].damper
-        S = self.unilateral_kernels[q1].sensitivity
-    
-        alpha = C / (2 * m)
-        omega = csqrt(D / m-alpha ** 2)
-    
-        sigma2 = 2 / self.unilateral_kernels[q1].inv_l
-        sigma = csqrt(sigma2)
-    
-        if np.isreal(omega):
-            gamma = alpha + 1j * omega
-            ComputeUpsilon1 = lfmComputeUpsilonMatrix(gamma, sigma2, X1, X2)
+        m = self.mass
+        D = self.spring
+        C = self.damper
+        S = self.sensitivity
+        
+        if self.omega_isreal:
+            ComputeUpsilon1 = lfmComputeUpsilonMatrix(self.gamma, sigma2, X1, X2)
             if self.unilateral_kernels[q1].isNormalised:
-                K0 = S / (2 * csqrt(2) * m * omega)
+                K0 = self.sensitivity / (2 * np.sqrt(2) * self.mass * self.omega)
             else:
-                K0 = sigma * csqrt(np.pi) * S / (2 * m * omega)
+                K0 = np.sqrt(self.scale) * np.sqrt(np.pi) * self.sensitivity / (2 * self.mass * self.omega)
         else:
-            gamma1 = alpha + 1j * omega
-            gamma2 = alpha - 1j * omega
-            ComputeUpsilon1 = lfmComputeUpsilonMatrix(gamma2, sigma2, X1, X2)
-            ComputeUpsilon2 = lfmComputeUpsilonMatrix(gamma1, sigma2, X1, X2)
-            if self.unilateral_kernels[q1].isNormalised:
-                K0 = (S / (1j * 4 * csqrt(2) * m * omega))
+            gamma1 = self.alpha + 1j * self.omega
+            gamma2 = self.alpha - 1j * self.omega
+            ComputeUpsilon1 = lfmComputeUpsilonMatrix(gamma2, self.scale, X1, X2)
+            ComputeUpsilon2 = lfmComputeUpsilonMatrix(gamma1, self.scale, X1, X2)
+            if self.isNormalised:
+                K0 = (S / (1j * 4 * csqrt(2) * m * self.omega))
             else:
-                K0 = sigma * csqrt(np.pi) * S / (1j * 4 * m * omega)
+                K0 = np.sqrt(self.scale) * np.sqrt(np.pi) * S / (1j * 4 * m * self.omega)
 
         g1 = np.zeros((5))
         g2 = np.zeros((2))
@@ -192,94 +213,71 @@ class LFMXRBF(Kern):
             if ind == 0:  # Gradient wrt m
                 gradThetaM = 1
                 gradThetaAlpha = -C / (2 * (m ** 2))
-                gradThetaOmega = (C ** 2 - 2 * m * D) / (2 * (m ** 2) * csqrt(4 * m * D - C ** 2))
+                gradThetaOmega = (C ** 2 - 2 * m * D) / (2 * (m ** 2) * np.sqrt(4 * m * D - C ** 2))
             if ind == 1:  # Gradient wrt D
                 gradThetaM = 0
                 gradThetaAlpha = 0
-                gradThetaOmega = 1 / csqrt(4 * m * D - C ** 2)
+                gradThetaOmega = 1 / np.sqrt(4 * m * D - C ** 2)
             if ind == 2:  # Gradient wrt C
                 gradThetaM = 0
                 gradThetaAlpha = 1 / (2 * m)
-                gradThetaOmega = -C / (2 * m * csqrt(4 * m * D - C ** 2))
+                gradThetaOmega = -C / (2 * m * np.sqrt(4 * m * D - C ** 2))
 
             # Gradient evaluation
 
-            if np.isreal(omega):
-                gamma = alpha + 1j * omega
+            if self.omega_isreal:
                 gradThetaGamma = gradThetaAlpha + 1j * gradThetaOmega
-                matGrad = -K0 * np.imag(lfmGradientUpsilonMatrix(gamma, sigma2, X1, X2) * gradThetaGamma \
-                                     - (gradThetaM / m + gradThetaOmega / omega) \
+                matGrad = -K0 * np.imag(lfmGradientUpsilonMatrix(self.gamma, self.scale, X1, X2) * gradThetaGamma \
+                                     - (gradThetaM / m + gradThetaOmega / self.omega) \
                                      * ComputeUpsilon1)
             else:
-                gamma1 = alpha + 1j * omega
-                gamma2 = alpha - 1j * omega
+                gamma1 = self.alpha + 1j * self.omega
+                gamma2 = self.alpha - 1j * self.omega
                 gradThetaGamma1 = gradThetaAlpha + 1j * gradThetaOmega
                 gradThetaGamma2 = gradThetaAlpha - 1j * gradThetaOmega
-                matGrad = K0 * (lfmGradientUpsilonMatrix(gamma2, sigma2, X1, X2) * gradThetaGamma2 \
-                                - lfmGradientUpsilonMatrix(gamma1, sigma2, X1, X2) * gradThetaGamma1 \
-                                - (gradThetaM / self.unilateral_kernels[q1].mass + gradThetaOmega / omega) \
+                matGrad = K0 * (lfmGradientUpsilonMatrix(gamma2, self.scale, X1, X2) * gradThetaGamma2 \
+                                - lfmGradientUpsilonMatrix(gamma1, self.scale, X1, X2) * gradThetaGamma1 \
+                                - (gradThetaM / m + gradThetaOmega / self.omega) \
                                 * (ComputeUpsilon1 - ComputeUpsilon2))
 
-            if subComponent:
-                if meanVector.shape[1] == 1:
-                    matGrad = matGrad * meanVector
-                else:
-                    matGrad = (meanVector * matGrad).T
             g1[ind] = sum(sum(matGrad * dL_dK))
 
-    
         # Gradient with respect to sigma
     
-        if np.isreal(omega):
-            gamma = alpha + 1j * omega
-            if self.unilateral_kernels[q1].isNormalised:
-               matGrad = -K0 * np.imag(lfmGradientSigmaUpsilonMatrix(gamma, sigma2, X1, X2))
+        if self.omega_isreal:
+            if self.isNormalised:
+               matGrad = -K0 * np.imag(lfmGradientSigmaUpsilonMatrix(gamma, self.scale, X1, X2))
             else:
-                matGrad = -(csqrt(np.pi) * S / (2 * m * omega)) \
+                matGrad = -(np.sqrt(np.pi) * S / (2 * m * self.omega)) \
                 * np.imag(ComputeUpsilon1 \
-                          + sigma * lfmGradientSigmaUpsilonMatrix(gamma, sigma2, X1, X2))
+                          + np.sqrt(self.scale) * lfmGradientSigmaUpsilonMatrix(gamma, self.scale, X1, X2))
         else:
-            gamma1 = alpha + 1j * omega
-            gamma2 = alpha - 1j * omega
-            if self.unilateral_kernels[q1].isNormalised:
-                matGrad = K0 * (lfmGradientSigmaUpsilonMatrix(gamma2, sigma2, X1, X2) \
-                - lfmGradientSigmaUpsilonMatrix(gamma1, sigma2, X1, X2))
+            gamma1 = self.alpha + 1j * self.omega
+            gamma2 = self.alpha - 1j * self.omega
+            if self.isNormalised:
+                matGrad = K0 * (lfmGradientSigmaUpsilonMatrix(gamma2, self.scale, X1, X2) \
+                - lfmGradientSigmaUpsilonMatrix(gamma1, self.scale, X1, X2))
             else:
-                matGrad = (csqrt(np.pi) * S / (1j * 4 * m * omega)) \
+                matGrad = (np.sqrt(np.pi) * S / (1j * 4 * m * self.omega)) \
                 * (ComputeUpsilon1 - ComputeUpsilon2 \
-                + sigma * (lfmGradientSigmaUpsilonMatrix(gamma2, sigma2, X1, X2) \
-                           - lfmGradientSigmaUpsilonMatrix(gamma1, sigma2, X1, X2)))
-
-    
-        if subComponent:
-            if meanVector.shape[0] == 1:
-              matGrad = matGrad * meanVector
-            else:
-              matGrad = (meanVector * matGrad).T
+                + np.sqrt(self.scale) * (lfmGradientSigmaUpsilonMatrix(gamma2, self.scale, X1, X2) \
+                           - lfmGradientSigmaUpsilonMatrix(gamma1, self.scale, X1, X2)))
 
         g1[3] = sum(sum(matGrad * dL_dK)) * (-(sigma ** 3) / 4)  # temporarly introduced by MA
         g2[0] = g1[3]
     
         # Gradient with respect to S
     
-        if np.isreal(omega):
-            if self.unilateral_kernels[q1].isNormalised:
-                matGrad = -(1 / (2 * csqrt(2) * m * omega)) * np.imag(ComputeUpsilon1)
+        if self.omega_isreal:
+            if self.isNormalised:
+                matGrad = -(1 / (2 * np.sqrt(2) * m * self.omega)) * np.imag(ComputeUpsilon1)
             else:
-                matGrad = -(csqrt(np.pi) * sigma / (2 * m * omega)) * np.imag(ComputeUpsilon1)
+                matGrad = -(np.sqrt(np.pi) * np.sqrt(self.scale) / (2 * m * self.omega)) * np.imag(ComputeUpsilon1)
         else:
-            if self.unilateral_kernels[q1].isNormalised:
-                matGrad = (1 / (1j * 4 * csqrt(2) * m * omega)) * (ComputeUpsilon1 - ComputeUpsilon2)
+            if self.isNormalised:
+                matGrad = (1 / (1j * 4 * np.sqrt(2) * m * self.omega)) * (ComputeUpsilon1 - ComputeUpsilon2)
             else:
-                matGrad = (csqrt(np.pi) * sigma / (1j * 4 * m * omega)) * (ComputeUpsilon1 - ComputeUpsilon2)
-
-    
-        if subComponent:
-            if meanVector.shape[0] == 1:
-                matGrad = matGrad * meanVector
-            else:
-                matGrad = (meanVector * matGrad).T
-
+                matGrad = (np.sqrt(np.pi) * np.sqrt(self.scale) / (1j * 4 * m * self.omega)) * (ComputeUpsilon1 - ComputeUpsilon2)
     
         g1[4] = sum(sum(matGrad * dL_dK))
         g1 = np.real(g1)
