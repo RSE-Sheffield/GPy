@@ -12,7 +12,7 @@ class LFMXRBF(Kern):
     LFM X RBF convolved kernel todo: expand.
     """
 
-    def __init__(self, input_dim, active_dims=None, name='lfmXrbf'):
+    def __init__(self, input_dim, active_dims=None, scale=None, mass=None, spring=None, damper=None, sensitivity=None, isNormalised=None, name='lfmXrbf'):
 
         super(LFMXRBF, self).__init__(input_dim, active_dims, name)
 
@@ -90,14 +90,14 @@ class LFMXRBF(Kern):
             # Kernel evaluation
             if self.omega_isreal:
                 gamma = self.alpha + 1j * self.omega
-                sK = np.imag(lfmComputeUpsilonMatrix(gamma, self.scale, X1, X2))
+                sK = np.imag(lfmUpsilonMatrix(gamma, self.scale, X1, X2))
                 K0 = np.sqrt(np.pi) * np.sqrt(self.scale) * self.sensitivity / (2 * self.mass * self.omega)
                 K = -K0 * sK
 
             else:
                 gamma1 = self.alpha + 1j * self.omega
                 gamma2 = self.alpha - 1j * self.omega
-                sK = lfmComputeUpsilonMatrix(gamma2, self.scale, X1, X2) - lfmComputeUpsilonMatrix(gamma1, self.scale, X1, X2)
+                sK = lfmUpsilonMatrix(gamma2, self.scale, X1, X2) - lfmUpsilonMatrix(gamma1, self.scale, X1, X2)
                 K0 = np.sqrt(np.pi) * np.sqrt(self.scale) * self.sensitivity / (1j * 4 * self.mass * self.omega)
                 K = K0 * sK
             return K
@@ -190,7 +190,7 @@ class LFMXRBF(Kern):
         S = self.sensitivity
         
         if self.omega_isreal:
-            ComputeUpsilon1 = lfmComputeUpsilonMatrix(self.gamma, sigma2, X1, X2)
+            ComputeUpsilon1 = lfmUpsilonMatrix(self.gamma, sigma2, X1, X2)
             if self.unilateral_kernels[q1].isNormalised:
                 K0 = self.sensitivity / (2 * np.sqrt(2) * self.mass * self.omega)
             else:
@@ -198,8 +198,8 @@ class LFMXRBF(Kern):
         else:
             gamma1 = self.alpha + 1j * self.omega
             gamma2 = self.alpha - 1j * self.omega
-            ComputeUpsilon1 = lfmComputeUpsilonMatrix(gamma2, self.scale, X1, X2)
-            ComputeUpsilon2 = lfmComputeUpsilonMatrix(gamma1, self.scale, X1, X2)
+            ComputeUpsilon1 = lfmUpsilonMatrix(gamma2, self.scale, X1, X2)
+            ComputeUpsilon2 = lfmUpsilonMatrix(gamma1, self.scale, X1, X2)
             if self.isNormalised:
                 K0 = (S / (1j * 4 * csqrt(2) * m * self.omega))
             else:
