@@ -548,7 +548,11 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     
     def test_lfmXrbf(self):
         k = GPy.kern.LFMXRBF(input_dim = 1)
-        self.assertTrue(check_kernel_gradient_functions(k, X = self.X, X2 = self.X2, verbose = verbose))
+        # load baseline values from matlab (gpmat)
+        baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
+        X = np.atleast_2d(baseline.get('X').flatten()).T
+        X2 = X
+        self.assertTrue(check_kernel_gradient_functions(k, X = X, X2 = X2, verbose = verbose))
 
     def test_rbfXrbf(self):
         k = GPy.kern.RBFXRBF(input_dim = 1)

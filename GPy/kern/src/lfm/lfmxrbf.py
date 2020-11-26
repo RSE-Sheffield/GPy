@@ -161,11 +161,12 @@ class LFMXRBF(Kern):
 
         # KERN
 
+        if X2 is None: X2 = X1
+
         if dL_dK is None:
             # this section of codes are historical legacy from the Matlab codes. I don't think it actually functioning
             # here. --Tianqi
             dL_dK  = X2
-            X2 = X1
         if meanVector is not None:
             if np.prod(meanVector.shape) > 1:
                 if meanVector.shape[0] == 1:
