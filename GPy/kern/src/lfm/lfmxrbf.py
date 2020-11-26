@@ -190,8 +190,8 @@ class LFMXRBF(Kern):
         S = self.sensitivity
         
         if self.omega_isreal:
-            ComputeUpsilon1 = lfmUpsilonMatrix(self.gamma, sigma2, X1, X2)
-            if self.unilateral_kernels[q1].isNormalised:
+            ComputeUpsilon1 = lfmUpsilonMatrix(self.gamma, self.scale, X1, X2)
+            if self.isNormalised:
                 K0 = self.sensitivity / (2 * np.sqrt(2) * self.mass * self.omega)
             else:
                 K0 = np.sqrt(self.scale) * np.sqrt(np.pi) * self.sensitivity / (2 * self.mass * self.omega)
@@ -246,7 +246,7 @@ class LFMXRBF(Kern):
     
         if self.omega_isreal:
             if self.isNormalised:
-               matGrad = -K0 * np.imag(lfmGradientSigmaUpsilonMatrix(gamma, self.scale, X1, X2))
+               matGrad = -K0 * np.imag(lfmGradientSigmaUpsilonMatrix(self.gamma, self.scale, X1, X2))
             else:
                 matGrad = -(np.sqrt(np.pi) * S / (2 * m * self.omega)) \
                 * np.imag(ComputeUpsilon1 \
@@ -263,7 +263,7 @@ class LFMXRBF(Kern):
                 + np.sqrt(self.scale) * (lfmGradientSigmaUpsilonMatrix(gamma2, self.scale, X1, X2) \
                            - lfmGradientSigmaUpsilonMatrix(gamma1, self.scale, X1, X2)))
 
-        g1[3] = sum(sum(matGrad * dL_dK)) * (-(sigma ** 3) / 4)  # temporarly introduced by MA
+        g1[3] = sum(sum(matGrad * dL_dK)) * (-(np.sqrt(self.scale) ** 3) / 4)  # temporarly introduced by MA
         g2[0] = g1[3]
     
         # Gradient with respect to S
