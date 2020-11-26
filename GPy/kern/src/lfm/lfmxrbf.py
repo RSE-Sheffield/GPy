@@ -39,7 +39,7 @@ class LFMXRBF(Kern):
         self.link_parameters(self.scale, self.mass, self.spring, self.damper, self.sensitivity)
 
         if isNormalised is None:
-            isNormalised = [False for _ in range(2)]
+            isNormalised = False
         self.isNormalised = isNormalised
 
         self.recalculate_intermediate_variables()
@@ -102,7 +102,7 @@ class LFMXRBF(Kern):
                 K = K0 * sK
             return K
 
-    def update_gradients_full(self, X1, X2=None, dL_dK=None, meanVector=None):
+    def update_gradients_full(self, dL_dK, X1, X2=None, meanVector=None):
 
         # LFMXRBFKERNGRADIENT Compute gradient between the LFM and RBF kernels.
         # FORMAT
@@ -250,7 +250,7 @@ class LFMXRBF(Kern):
             else:
                 matGrad = -(np.sqrt(np.pi) * S / (2 * m * self.omega)) \
                 * np.imag(ComputeUpsilon1 \
-                          + np.sqrt(self.scale) * lfmGradientSigmaUpsilonMatrix(gamma, self.scale, X1, X2))
+                          + np.sqrt(self.scale) * lfmGradientSigmaUpsilonMatrix(self.gamma, self.scale, X1, X2))
         else:
             gamma1 = self.alpha + 1j * self.omega
             gamma2 = self.alpha - 1j * self.omega
@@ -284,4 +284,15 @@ class LFMXRBF(Kern):
         # Gradient with respect to the "variance" of the RBF
         g2[0] = 0  # Otherwise is counted twice, temporarly changed by MA
         g2[1] = 0
-        return [g1, g2]
+        
+        # names = {'mass', 'spring', 'damper', 'inverse width', 'sensitivity'}
+        # scale = 2/inverse width
+
+        # kernel 1
+        self.mass.gradient = g1[0]
+        self.spring.gradient = g1[1]
+        self.damper.gradient = g1[2]
+        self.scale.gradient = g1[3]
+        self.sensitivity.gradient = g1[4]
+        
+        # kernel 2
