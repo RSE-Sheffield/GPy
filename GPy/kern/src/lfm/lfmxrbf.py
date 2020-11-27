@@ -52,6 +52,14 @@ class LFMXRBF(Kern):
 
         self.gamma = self.alpha + 1j * self.omega
 
+    def parameters_changed(self):
+        '''
+        This function overrides the same name function in the grandparent class "Parameterizable", which is simply
+        "pass"
+        It describes the behaviours of the class when the "parameters" of a kernel are updated.
+        '''
+        self.recalculate_intermediate_variables()
+
     def K(self, X1, X2=None):
             # LFMXRBFKERNCOMPUTE Compute a cross kernel between the LFM and RBF kernels.
             # FORMAT
@@ -83,6 +91,8 @@ class LFMXRBF(Kern):
 
             # KERN
 
+            self.recalculate_intermediate_variables()
+
             if X2 is None:
                 X2 = X1
             assert X1.shape[1] == 1 and X2.shape[1] == 1, 'Input of' + inspect.stack()[0][3]  + 'can only have one column'
@@ -101,6 +111,17 @@ class LFMXRBF(Kern):
                 K0 = np.sqrt(np.pi) * np.sqrt(self.scale) * self.sensitivity / (1j * 4 * self.mass * self.omega)
                 K = K0 * sK
             return K
+
+    def Kdiag(self, X):
+        assert X.shape[1] == 2, 'Input can only have one column'
+        slices = index_to_slices(X[:,self.index_dim])
+        target = np.zeros((X.shape[0]))  #.astype(np.complex128)
+        for q, slices_i in zip(range(2), slices):
+            for s in slices_i:
+                Kdiag_sub = np.real(self.Kdiag_sub(q, X[s, :-1]))
+                np.copyto(target[s], Kdiag_sub)
+
+        return target
 
     def update_gradients_full(self, dL_dK, X1, X2=None, meanVector=None):
 

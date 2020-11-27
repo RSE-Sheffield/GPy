@@ -72,6 +72,8 @@ class LFMXLFM(Kern):
 
     def K(self, X, X2=None):
         
+        self.recalculate_intermediate_variables()
+
         if X2 is None:
             X2 = X
 
