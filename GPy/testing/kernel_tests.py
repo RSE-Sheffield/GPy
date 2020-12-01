@@ -561,6 +561,9 @@ class KernelGradientTestsContinuous(unittest.TestCase):
     #multiple output latent force model kernel
     def test_lfm(self):
         k_lfmxlfm = [GPy.kern.LFMXLFM(input_dim = 1) for i in range(9)]
+        baseline = sio.loadmat('GPy/testing/baseline/baseline.mat')
+        X = np.atleast_2d(baseline.get('X').flatten()).T
+        X2 = X
         cov_dict = {(0,0): k_lfmxlfm[0],
                     (0,1): k_lfmxlfm[1],
                     (0,2): k_lfmxlfm[2],
@@ -572,7 +575,7 @@ class KernelGradientTestsContinuous(unittest.TestCase):
                     (2,2): k_lfmxlfm[8]}
         k = GPy.kern.MultioutputKern(k_lfmxlfm, cross_covariances = cov_dict)
         # requires a check with appropriate test data for multi output kernel
-        Xt,_,_ = GPy.util.multioutput.build_XY([self.X, self.X])
+        Xt,_,_ = GPy.util.multioutput.build_XY([X, X])
         self.assertTrue(check_kernel_gradient_functions(k, X=Xt, verbose=verbose, fixed_X_dims=-1))
         
 class KernelTestsMiscellaneous(unittest.TestCase):
