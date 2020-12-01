@@ -45,6 +45,35 @@ sigma2 = 2 / inversewidth
 
 k = GPy.kern.LFMXLFM(input_dim = 1)
 
+# Utility function
+
+def numerical_gradient(k, param_name, kernel_index, step = 10e-6):
+    """Numerically determines the gradient of the optimisation function against a specified hyperparameter
+    using a finite difference approach.
+
+    Only works for convolved kernels specified in the form kern1Xkern2.
+
+    :param k: kernel
+    :param param_name: name of parameter e.g. 'mass'
+    :param kernel_index: 0 or 1
+    :param step: the size of the finite difference step
+    
+    :return: gradient of the optimisation function"""
+
+    k_list = [k.copy(), k.copy()]
+
+    # decrement / increment parameter value
+    k_list[0].__dict__[param_name][kernel_index] -= step / 2
+    k_list[1].__dict__[param_name][kernel_index] += step / 2
+    
+    # determine covariance matricies
+    cov_list = [k_list[0].K(np.atleast_2d(X).transpose()), k_list[1].K(np.atleast_2d(X).transpose())]
+  
+    # determine gradient
+    gradient = (np.sum(covGrad*cov_list[1]) - np.sum(covGrad*cov_list[0])) / step
+
+    return gradient
+
 # Check parameters are the same as matlab
 
 def test_parameters():
@@ -178,37 +207,16 @@ def test_gradient_mass_1():
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.mass.gradient[0], grad1_lfmXlfm[0])
 
-def numerical_gradient(k, param_name, kernel_index, step = 10e-6):
-    """Numerically determines the gradient of the optimisation function against a specified hyperparameter
-    using a finite difference approach.
-
-    Only works for convolved kernels specified in the form kern1Xkern2.
-
-    :param k: kernel
-    :param param_name: name of parameter e.g. 'mass'
-    :param kernel_index: 0 or 1
-    :param step: the size of the finite difference step
-    
-    :return: gradient of the optimisation function"""
-
-    k_list = [k.copy(), k.copy()]
-
-    # decrement / increment parameter value
-    k_list[0].__dict__[param_name][kernel_index] -= step / 2
-    k_list[1].__dict__[param_name][kernel_index] += step / 2
-    
-    # determine covariance matricies
-    cov_list = [k_list[0].K(np.atleast_2d(X).transpose()), k_list[1].K(np.atleast_2d(X).transpose())]
-  
-    # determine gradient
-    gradient = (np.sum(covGrad*cov_list[1]) - np.sum(covGrad*cov_list[0])) / step
-
-    return gradient
-
 def test_numerical_gradient_mass_1():
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     analytical = k.mass.gradient[0]
     numerical = numerical_gradient(k, "mass", 0)
+    np.testing.assert_almost_equal(analytical, numerical)
+
+def test_numerical_gradient_mass_2():
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    analytical = k.mass.gradient[1]
+    numerical = numerical_gradient(k, "mass", 1)
     np.testing.assert_almost_equal(analytical, numerical)
 
 def test_gradient_spring_1():  
