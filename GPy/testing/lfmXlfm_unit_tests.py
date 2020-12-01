@@ -231,6 +231,12 @@ def test_gradient_scale():
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.scale.gradient, grad1_lfmXlfm[3])
 
+def test_numerical_gradient_scale():
+    k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
+    analytical = k.scale.gradient[0]
+    numerical = numerical_gradient(k, "scale", 0)
+    np.testing.assert_almost_equal(analytical, numerical)
+
 def test_gradient_sensitivity_1():  
     k.update_gradients_full(covGrad, np.atleast_2d(X).transpose(), np.atleast_2d(X).transpose())
     np.testing.assert_array_almost_equal(k.sensitivity.gradient[0], grad1_lfmXlfm[4])
