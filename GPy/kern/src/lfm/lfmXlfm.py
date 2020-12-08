@@ -10,7 +10,33 @@ from GPy.util.config import config # for assesing whether to use cython
 
 class LFMXLFM(Kern):
     """
-    LFM X LFM convolved kernel todo: expand.
+    LFM X LFM convolved kernel:
+
+    The latent force model (LFM) kernel is the result of a second order differential equation where there is assumed to be a force driving the system which is drawn from a Gaussian process with an RBF kernel, i.e. we have the following differential equation,
+
+    .. math::
+        B + S f(x-\delta) = m \\frac{d^2y(x)}{dx^2} + c \\frac{dy(x)}{dx} + ky(x)
+
+    where m is a mass, c is a damping coefficient, k is a spring constant, S is a scalar sensitivity, B is the initial level and delta is a time delay.
+    
+    If f(x) is assumed to come from a Gaussian process with an RBF covariance function y(t) is a Gaussian process with a covariance function provided by the single latent force model kernel. Further details about the structure of the kernel can be found in: M. Alvarez, D. Luengo and N. D. Lawrence, "Latent Force Models", Proc. AISTATS 2009.
+
+    The kernel is designed to interoperate with the multiple output block kernel so that f(x) can be inferred given several different instantiations of y(x).
+
+    The parameters (m, c, delta and k) are constrained positive.
+
+    Inputs must be one dimensional i.e. time series.
+
+    Parameters:
+
+    - ``scale`` (ToDo: Define)
+    - ``mass`` (Mass)
+    - ``spring`` (Spring constant)
+    - ``damper`` (Damping coefficient)
+    - ``sensitivity`` (Scalar sensitivity)
+    - ``isNormalised`` (ToDo: Define)
+
+    Parameters are 1x2 numpy arrays with the first value assocated with the first part of the kernel and the second with the second. ``scale`` is the same for both parts of the kernel.
     """
 
     def __init__(self, input_dim, scale=None, mass=None, spring=None, damper=None, sensitivity=None,
@@ -51,6 +77,7 @@ class LFMXLFM(Kern):
         self.index_dim = -1
 
     def recalculate_intermediate_variables(self):
+        """Recalulate (effectively cached) intermediate variables derived from kernel object parameters."""
         # Get length scale out.
         #self.sigma2 = self.scale[0] #in gpmat, the first kernel's scale is used and the scond apparently ignored
         #self.sigma = np.sqrt(self.scale[0]) #assuming this is a good sub for `csqrt`
@@ -71,7 +98,6 @@ class LFMXLFM(Kern):
         # super(LFM, self).parameters_changed()
 
     def K(self, X, X2=None):
-        
         self.recalculate_intermediate_variables()
 
         if X2 is None:

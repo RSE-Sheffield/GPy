@@ -9,7 +9,20 @@ from GPy.util.config import config # for assesing whether to use cython
 
 class LFMXRBF(Kern):
     """
-    LFM X RBF convolved kernel todo: expand.
+    LFM X RBF convolved kernel:
+
+    Inputs must be one dimensional i.e. time series.
+
+    Parameters:
+
+    - ``scale`` (ToDo: Define)
+    - ``mass`` (Mass)
+    - ``spring`` (Spring constant)
+    - ``damper`` (Damping coefficient)
+    - ``sensitivity`` (Scalar sensitivity)
+    - ``isNormalised`` (ToDo: Define)
+
+    Parameters are 1x2 numpy arrays with the first value assocated with the first part of the kernel and the second with the second. ``scale`` is the same for both parts of the kernel.
     """
 
     def __init__(self, input_dim, active_dims=None, scale=None, mass=None, spring=None, damper=None, sensitivity=None, isNormalised=None, name='lfmXrbf'):
