@@ -25,3 +25,5 @@ python:
   version: 3.7
   install:
     - requirements: doc/source/requirements.txt
+    - method: setuptools
+      path: GPy
