@@ -26,4 +26,4 @@ python:
   install:
     - requirements: doc/source/requirements.txt
     - method: setuptools
-      path: GPy
+      path: .
