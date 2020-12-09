@@ -2,6 +2,14 @@
 # Licensed under the BSD 3-clause license (see LICENSE.txt)
 # import sys
 
+"""
+This module adds functionality for Latent Force Models (LFM) to GPy. It is partially complete.
+
+LFMs are a form of multiple output GP that make use of a kernel function inspired by a differential equation representing a phycial process (see M. Alvarez, D. Luengo and N. D. Lawrence, "Latent Force Models", Proc. AISTATS 2009.).
+
+Multiple output GPs using co-regionalised regression are implemented elsewhere in GPy (:py:class:`GPy.models.GPCoregionalizedRegression`). LFMs combine kernels using convolution and require functionality in :py:class:`GPy.kern.MultioutputKern`.
+"""
+
 import numpy as np
 from . import lfm_C
 
@@ -12,15 +20,49 @@ def cell(d0, d1):
         return [[None for _ in range(d1)] for _ in range(d0)]
 
 def lfmUpsilonMatrix(gamma1_p, sigma2, X, X2):
+    """Computes the Upsilon's Gradient wrt to gamma.
+        
+        :param gamma: gamma value system
+        :param sigma2: squared lengthscale
+        :param X: first time input
+        :param X2: second time input
+
+        :return: gradient Matrix
+    """
     return lfm_C.UpsilonMatrix(gamma1_p, sigma2, X.astype(np.float64), X2.astype(np.float64))
 
 def lfmUpsilonVector(gamma1_p, sigma2, X):
+    """Computes Upsilon given a input vector
+    
+    :param gamma: gamma value system
+    :param sigma2: squared lengthscale
+    :param X: first time input
+
+    :return: upsilon vector
+    """
     return lfm_C.UpsilonVector(gamma1_p, sigma2, X.astype(np.float64))
 
 def lfmGradientUpsilonMatrix(gamma1_p, sigma2, X, X2):
+    """Computes the Upsilon's Gradient wrt to gamma.
+
+    :param gamma: gamma value system
+    :param sigma2: squared lengthscale
+    :param X: first time input
+    :param X2: second time input
+
+    :return: gradient Matrix
+    """
     return lfm_C.GradientUpsilonMatrix(gamma1_p, sigma2, X.astype(np.float64), X2.astype(np.float64))
 
 def lfmGradientUpsilonVector(gamma1_p, sigma2, X):
+    """Computes the Upsilon's Gradient wrt to Sigma assuming that X2 is zero vector.
+
+    :param gamma: gamma value system
+    :param sigma2: squared lengthscale
+    :param t1: first time input
+    
+    :return: gradient vector
+    """
     return lfm_C.GradientUpsilonVector(gamma1_p, sigma2, X.astype(np.float64))
 
 def lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, X, X2):
