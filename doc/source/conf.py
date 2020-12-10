@@ -41,6 +41,7 @@ MOCK_MODULES = [
     'GPy.kern.stationary_cython',
     "sympy.utilities",
     "sympy.utilities.lambdify",
+    "GPy.kern.src.lfm.lfm_C",
 ]
 
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
