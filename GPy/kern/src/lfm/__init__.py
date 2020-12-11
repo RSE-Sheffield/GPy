@@ -157,20 +157,20 @@ def lfmComputeH4(gamma1_p, gamma1_m, sigma2, X, preFactor, preExp, mode=None, te
 
 def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradUpsilon2, compUpsilon1, compUpsilon2, mode, term=None):
     """
-    Gradient of the function h_i(z) with respect to some of the
-    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+    Gradient of the function :math:`h_i(z)` with respect to some of the
+    hyperparameters of the kernel: :math:`m_k`, :math:`C_k`, :math:`D_k`, :math:`m_r`, :math:`C_r` or :math:`D_r`.
     
-    Computes the gradient of the function h_i(z) with respect to some of
+    Computes the gradient of the function :math:`h_i(z)` with respect to some of
     the parameters of the system (mass, spring or damper).
 
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
     :param sigma2: length scale of latent process.
-    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
-    respect to the desired parameter.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with respect to the desired parameter.
     :param X: first time input.
     :param X2: second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed.
+
     :return g: Gradient of the function with respect to the desired parameter.
     """
 
@@ -191,17 +191,16 @@ def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradU
 
 def lfmGradientH32(preFactor, gradThetaGamma, compUpsilon1,compUpsilon2, mode, term=None):
     """
-    Gradient of the function h_i(z) with respect to some of the
-    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+    Gradient of the function :math:`h_i(z)` with respect to some of the
+    hyperparameters of the kernel: :math:`m_k`, :math:`C_k`, :math:`D_k`, :math:`m_r`, :math:`C_r` or :math:`D_r`.
 
-    Computes the gradient of the function h_i(z) with respect to some of
+    Computes the gradient of the function :math:`h_i(z)` with respect to some of
     the parameters of the system (mass, spring or damper).
 
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
     :param sigma2: length scale of latent process.
-    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
-    respect to the desired parameter.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with respect to the desired parameter.
     :param X: first time input.
     :param X2: second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed
@@ -221,10 +220,10 @@ def lfmGradientH32(preFactor, gradThetaGamma, compUpsilon1,compUpsilon2, mode, t
 
 def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon1, gradUpsilon2, compUpsilon1, compUpsilon2, mode, term=None):
     """
-    Gradient of the function h_i(z) with respect to some of the
-    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+    Gradient of the function :math:`h_i(z)` with respect to some of the
+    hyperparameters of the kernel: :math:`m_k`, :math:`C_k`, :math:`D_k`, :math:`m_r`, :math:`C_r` or :math:`D_r`.
 
-    Computes the gradient of the function h_i(z) with respect to some of
+    Computes the gradient of the function :math:`h_i(z)` with respect to some of
     the parameters of the system (mass, spring or damper).
     
     :param gamma1: Gamma value for first system.
@@ -258,10 +257,10 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
 def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     compUpsilon1, compUpsilon2, mode, term=None):
     """
-    Gradient of the function h_i(z) with respect to some of the
-    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+    Gradient of the function :math:`h_i(z)` with respect to some of the
+    hyperparameters of the kernel: :math:`m_k`, :math:`C_k`, :math:`D_k`, :math:`m_r`, :math:`C_r` or :math:`D_r`.
 
-    Computes the gradient of the function h_i(z) with respect to some of
+    Computes the gradient of the function :math:`h_i(z)` with respect to some of
     the parameters of the system (mass, spring or damper).
 
     :param gamma1: Gamma value for first system.
@@ -292,10 +291,10 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
 
 def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None):
     """
-    Gradient of the function h_i(z) with respect \sigma.
+    Gradient of the function :math:`h_i(z)` with respect :math:`\sigma`.
 
-    Computes the gradient of the function h_i(z) with respect to the
-    length-scale of the input "force", \sigma.
+    Computes the gradient of the function :math:`h_i(z)` with respect to the
+    length-scale of the input "force", :math:`\sigma`.
 
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
@@ -304,7 +303,7 @@ def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None
     :param X2: second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed
 
-    :return g: Gradient of the function with respect to \sigma.
+    :return g: Gradient of the function with respect to :math:`\sigma`.
     """
 
     if not mode:
@@ -320,10 +319,10 @@ def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None
 
 def lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preFactor, preExp, mode, term):
     """
-    Gradient of the function h_i(z) with respect \sigma.
+    Gradient of the function :math:`h_i(z)` with respect :math:`\sigma`.
     
-    Computes the gradient of the function h_i(z) with respect to the
-    length-scale of the input "force", \sigma.
+    Computes the gradient of the function :math:`h_i(z)` with respect to the
+    length-scale of the input "force", :math:`\sigma`.
 
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
@@ -332,7 +331,7 @@ def lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preFactor, preExp, mode, term)
     :param X2: second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed.
 
-    :return g: Gradient of the function with respect to \sigma.
+    :return g: Gradient of the function with respect to :math:`\sigma`.
     """
 
     if not mode:
