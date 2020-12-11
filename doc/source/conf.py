@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
+    'readthedocs_ext.readthedocs',
 ]
 
 #---sphinx.ext.inheritance_diagram config
