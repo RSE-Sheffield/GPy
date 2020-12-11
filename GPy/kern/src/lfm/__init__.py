@@ -3,17 +3,20 @@
 # import sys
 
 """
-This module adds functionality for Latent Force Models (LFM) to GPy. It is partially complete.
+This module adds functionality for Latent Force Models (LFM) to GPy. **It is partially complete.**
 
 LFMs are a form of multiple output GP that make use of a kernel function inspired by a differential equation representing a phycial process (see M. Alvarez, D. Luengo and N. D. Lawrence, "Latent Force Models", Proc. AISTATS 2009.).
 
-Multiple output GPs using co-regionalised regression are implemented elsewhere in GPy (:py:class:`GPy.models.GPCoregionalizedRegression`). LFMs combine kernels using convolution and require functionality in :py:class:`GPy.kern.MultioutputKern`.
+LFMs combine kernels using convolution and will require functionality in :py:class:`GPy.kern.MultioutputKern` to be combined into a useful model..
+
+Multiple output GPs using co-regionalised regression are implemented elsewhere in GPy (:py:class:`GPy.models.GPCoregionalizedRegression`). 
 """
 
 import numpy as np
 from . import lfm_C
 
 def cell(d0, d1):
+    """The purpose of this function is unknown."""
     if d1 == 1:
         return [None for _ in range(d0)]
     else:
@@ -66,22 +69,46 @@ def lfmGradientUpsilonVector(gamma1_p, sigma2, X):
     return lfm_C.GradientUpsilonVector(gamma1_p, sigma2, X.astype(np.float64))
 
 def lfmGradientSigmaUpsilonMatrix(gamma1_p, sigma2, X, X2):
+    """
+    Computes the Upsilon's Gradient wrt to Sigma.
+    
+    :param gamma: gamma value system
+    :param sigma2: squared lengthscale
+    :param X: first time input
+    :param X2: second time input
+    
+    :return gradient Matrix    
+    """
     return lfm_C.GradientSigmaUpsilonMatrix(gamma1_p, sigma2, X.astype(np.float64), X2.astype(np.float64))
 
 def lfmGradientSigmaUpsilonVector(gamma1_p, sigma2, X):
+    """
+    Computes the Upsilon's Gradient wrt to Sigma assuming that t2 is zero vector.
+
+    :param gamma: gamma value system
+    :param  sigma2: squared lengthscale
+    :param  X: first time input
+    
+    :return gradient vector (x 1)
+    """
     return lfm_C.GradientSigmaUpsilonVector(gamma1_p, sigma2, X.astype(np.float64))
 
 def lfmComputeH3( gamma1_p, gamma1_m, sigma2, X, X2, preFactor, mode=None, term=None):
-    # LFMCOMPUTEH3 Helper function for computing part of the LFM kernel.
-    # FORMAT
-    # DESC computes a portion of the LFM kernel.
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1).
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN h : result of this subcomponent of the kernel for the given values.
+    """
+    Helper function for computing part of the LFM kernel.
+    
+    Computes a portion of the LFM kernel.
+
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed
+    :param term: the purpose of this parameter is unknown.
+
+    :return h: result of this subcomponent of the kernel for the given values.
+    """
     if not mode:
         if not term:
             upsilon = lfmUpsilonMatrix(gamma1_p, sigma2, X, X2)
@@ -97,18 +124,22 @@ def lfmComputeH3( gamma1_p, gamma1_m, sigma2, X, X2, preFactor, mode=None, term=
     return [h, upsilon]
 
 def lfmComputeH4(gamma1_p, gamma1_m, sigma2, X, preFactor, preExp, mode=None, term=None ):
-    # LFMCOMPUTEH4 Helper function for computing part of the LFM kernel.
-    # FORMAT
-    # DESC computes a portion of the LFM kernel.
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG X : first time input (number of time points x 1).
-    # ARG preFactor : precomputed constants
-    # ARG preExp : precomputed exponentials
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN h : result of this subcomponent of the kernel for the given values.
+    """
+    Helper function for computing part of the LFM kernel.
+    
+    Computes a portion of the LFM kernel.
 
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param X: first time input.
+    :param preFactor: precomputed constants.
+    :param preExp: precomputed exponentials.
+    :param mode: indicates in which way the vectors X and X2 must be transposed.
+    :param term: the purpose of this parameter is unknown.
+
+    :return h: result of this subcomponent of the kernel for the given values.
+    """
     if not mode:
         if not term:
             upsilon = lfmUpsilonVector(gamma1_p, sigma2, X)[:, None]
@@ -125,27 +156,25 @@ def lfmComputeH4(gamma1_p, gamma1_m, sigma2, X, preFactor, preExp, mode=None, te
     return [h, upsilon]
 
 def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradUpsilon2, compUpsilon1, compUpsilon2, mode, term=None):
+    """
+    Gradient of the function h_i(z) with respect to some of the
+    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+    
+    Computes the gradient of the function h_i(z) with respect to some of
+    the parameters of the system (mass, spring or damper).
 
-    # LFMGRADIENTH31 Gradient of the function h_i(z) with respect to some of the
-    # hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to some of
-    # the parameters of the system (mass, spring or damper).
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG gradThetaGamma : Vector with the gradient of gamma1 and gamma2 with
-    # respect to the desired parameter.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1)
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to the desired
-    # parameter.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
+    respect to the desired parameter.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed.
+    :return g: Gradient of the function with respect to the desired parameter.
+    """
 
-    #this has come from matlab where eberything is an array, so let's make everything an array for now
+    #this has come from matlab where everything is an array, so let's make everything an array for now
     preFactor = np.atleast_1d(preFactor)
     preFactorGrad = np.atleast_1d(preFactorGrad)
 
@@ -161,24 +190,24 @@ def lfmGradientH31(preFactor, preFactorGrad, gradThetaGamma, gradUpsilon1, gradU
     return g
 
 def lfmGradientH32(preFactor, gradThetaGamma, compUpsilon1,compUpsilon2, mode, term=None):
-    # LFMGRADIENTH32 Gradient of the function h_i(z) with respect to some of the
-    # hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to some of
-    # the parameters of the system (mass, spring or damper).
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG gradThetaGamma : Vector with the gradient of gamma1 and gamma2 with
-    # respect to the desired parameter.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1)
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to the desired
-    # parameter.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    """
+    Gradient of the function h_i(z) with respect to some of the
+    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+
+    Computes the gradient of the function h_i(z) with respect to some of
+    the parameters of the system (mass, spring or damper).
+
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
+    respect to the desired parameter.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed
+
+    :return g: Gradient of the function with respect to the desired parameter.
+    """
 
     if not mode:
         if not term:
@@ -191,24 +220,24 @@ def lfmGradientH32(preFactor, gradThetaGamma, compUpsilon1,compUpsilon2, mode, t
     return g
 
 def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon1, gradUpsilon2, compUpsilon1, compUpsilon2, mode, term=None):
-    # LFMGRADIENTH41 Gradient of the function h_i(z) with respect to some of the
-    # hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to some of
-    # the parameters of the system (mass, spring or damper).
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG gradThetaGamma : Vector with the gradient of gamma1 and gamma2 with
-    # respect to the desired parameter.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1)
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to the desired
-    # parameter.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    """
+    Gradient of the function h_i(z) with respect to some of the
+    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+
+    Computes the gradient of the function h_i(z) with respect to some of
+    the parameters of the system (mass, spring or damper).
+    
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
+    respect to the desired parameter.
+    :param X: first time input.
+    :param X2 : second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed.
+
+    :return g: Gradient of the function with respect to the desired parameter.
+    """
 
     if not mode:
         if not term:
@@ -228,24 +257,24 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
 
 def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     compUpsilon1, compUpsilon2, mode, term=None):
-    # LFMGRADIENTH42 Gradient of the function h_i(z) with respect to some of the
-    # hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to some of
-    # the parameters of the system (mass, spring or damper).
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG gradThetaGamma : Vector with the gradient of gamma1 and gamma2 with
-    # respect to the desired parameter.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1)
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to the desired
-    # parameter.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    """
+    Gradient of the function h_i(z) with respect to some of the
+    hyperparameters of the kernel: m_k, C_k, D_k, m_r, C_r or D_r.
+
+    Computes the gradient of the function h_i(z) with respect to some of
+    the parameters of the system (mass, spring or damper).
+
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
+    respect to the desired parameter.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed
+    
+    :param g: Gradient of the function with respect to the desired parameter.
+    """
 
     if not mode:
         if not term:
@@ -262,22 +291,21 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     return g.T
 
 def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None):
+    """
+    Gradient of the function h_i(z) with respect \sigma.
 
-    # LFMGRADIENTSIGMAH3 Gradient of the function h_i(z) with respect \sigma.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to the
-    # length-scale of the input "force", \sigma.
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1).
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to \sigma.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    Computes the gradient of the function h_i(z) with respect to the
+    length-scale of the input "force", \sigma.
 
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed
+
+    :return g: Gradient of the function with respect to \sigma.
+    """
 
     if not mode:
         if not term:
@@ -291,20 +319,22 @@ def lfmGradientSigmaH3(gamma1, gamma2, sigma2, X, X2, preFactor, mode, term=None
     return g
 
 def lfmGradientSigmaH4(gamma1, gamma2, sigma2, X, preFactor, preExp, mode, term):
-    # LFMGRADIENTSIGMAH4 Gradient of the function h_i(z) with respect \sigma.
-    # FORMAT
-    # DESC Computes the gradient of the function h_i(z) with respect to the
-    # length-scale of the input "force", \sigma.
-    # ARG gamma1 : Gamma value for first system.
-    # ARG gamma2 : Gamma value for second system.
-    # ARG sigma2 : length scale of latent process.
-    # ARG X : first time input (number of time points x 1).
-    # ARG X2 : second time input (number of time points x 1).
-    # ARG mode: indicates in which way the vectors X and X2 must be transposed
-    # RETURN g : Gradient of the function with respect to \sigma.
-    #
-    # Author : Tianqi Wei
-    # Based on Matlab codes by David Luengo, 2007, 2008, Mauricio Alvarez, 2008
+    """
+    Gradient of the function h_i(z) with respect \sigma.
+    
+    Computes the gradient of the function h_i(z) with respect to the
+    length-scale of the input "force", \sigma.
+
+    :param gamma1: Gamma value for first system.
+    :param gamma2: Gamma value for second system.
+    :param sigma2: length scale of latent process.
+    :param X: first time input.
+    :param X2: second time input.
+    :param mode: indicates in which way the vectors X and X2 must be transposed.
+
+    :return g: Gradient of the function with respect to \sigma.
+    """
+
     if not mode:
         if not term:
             g = np.outer(lfmGradientSigmaUpsilonVector(gamma1, sigma2, X),(preExp/preFactor[0] - np.conj(preExp)/preFactor[1]).T)
