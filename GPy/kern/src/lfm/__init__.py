@@ -229,8 +229,7 @@ def lfmGradientH41(preFactor, preFactorGrad, gradThetaGamma, preExp, gradUpsilon
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
     :param sigma2: length scale of latent process.
-    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
-    respect to the desired parameter.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with respect to the desired parameter.
     :param X: first time input.
     :param X2 : second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed.
@@ -266,8 +265,7 @@ def lfmGradientH42(preFactor, preFactorGrad, gradThetaGamma, preExp, preExpt,
     :param gamma1: Gamma value for first system.
     :param gamma2: Gamma value for second system.
     :param sigma2: length scale of latent process.
-    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with
-    respect to the desired parameter.
+    :param gradThetaGamma: Vector with the gradient of gamma1 and gamma2 with respect to the desired parameter.
     :param X: first time input.
     :param X2: second time input.
     :param mode: indicates in which way the vectors X and X2 must be transposed
