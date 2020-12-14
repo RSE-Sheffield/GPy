@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+import scipy.io as sio
+
 import GPy
 from GPy import kern
 
@@ -14,16 +16,22 @@ basedir = os.path.dirname(os.path.relpath(os.path.abspath(__file__)))
 result_dir = os.path.join(basedir, 'testresult','.')
 baseline_dir = os.path.join(basedir, 'baseline','.')
 
+baseline_file = os.path.join(baseline_dir, 'toyDataBatchNLFM1.mat')
+
 # Load baseline / test data
+toydata_baseline = sio.loadmat(baseline_file)
 
-with open(os.path.join(baseline_dir, "toydata_baseline.pkl"), "rb") as f:
-    toydata_baseline = pickle.load(f)
+# Extract data from `.m` file
+x_temp = toydata_baseline['XTemp']
+x_test_temp = toydata_baseline['XTestTemp']
+y_temp = toydata_baseline['yTemp']
+y_test_temp = toydata_baseline['yTestTemp']
 
-x = toydata_baseline[0] # Observed x (training set)
-x_test = toydata_baseline[1] # Observed x (test set)
-x_pred = toydata_baseline[2] # x values over which to predict
-y = toydata_baseline[3] # Observed y (training set)
-y_test = toydata_baseline[4] # Observed y (test set)
+# Re-arrange data
+x = x_temp[0, 0:3].tolist() # Observed x (training set)
+y = y_temp[0, 0:3].tolist() # Observed y (training set)
+x_test = x_test_temp[0, 0:3].tolist() # Observed x (test set)
+y_test = y_test_temp[0, 0:3].tolist() # Observed y (test set)
 
 def test_lfmxlfm_update_gradients_full():
     #this test duplicates part of `check_kernel_gradient_functions()` and should be removed
