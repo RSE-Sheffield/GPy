@@ -44,17 +44,17 @@ def test_multioutput_optimisation():
 
     # build kernel
 
-    k_rbf = [GPy.kern.RBF(input_dim = 1) for i in range(9)]
+    k_lfmxlfm = [GPy.kern.LFMXLFM(input_dim = 1) for i in range(9)]
     
-    cov_dict = {(0,0): k_rbf[0],
-                    (0,1): k_rbf[1],
-                    (0,2): k_rbf[2],
-                    (1,0): k_rbf[3],
-                    (1,1): k_rbf[4],
-                    (1,2): k_rbf[5],
-                    (2,0): k_rbf[6],
-                    (2,1): k_rbf[7],
-                    (2,2): k_rbf[8]}
+    cov_dict = {(0,0): k_lfmxlfm[0],
+                    (0,1): k_lfmxlfm[1],
+                    (0,2): k_lfmxlfm[2],
+                    (1,0): k_lfmxlfm[3],
+                    (1,1): k_lfmxlfm[4],
+                    (1,2): k_lfmxlfm[5],
+                    (2,0): k_lfmxlfm[6],
+                    (2,1): k_lfmxlfm[7],
+                    (2,2): k_lfmxlfm[8]}
     
     Xm, Ym, Im = GPy.util.multioutput.build_XY(x, y)
    
@@ -62,7 +62,7 @@ def test_multioutput_optimisation():
    
     likelihoods = [GPy.likelihoods.Gaussian(variance=0.1) for i in range(9)]
 
-    m = GPy.models.MultioutputGP(X_list = x, Y_list = y, kernel_list = k_rbf, likelihood_list = likelihoods, kernel_cross_covariances = cov_dict)
+    m = GPy.models.MultioutputGP(X_list = x, Y_list = y, kernel_list = k_lfmxlfm, likelihood_list = likelihoods, kernel_cross_covariances = cov_dict)
 
     # plot initial covariance matrix
 
